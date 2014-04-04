@@ -1,0 +1,5 @@
+wrangler.commands.CloneExisting
+wrangler.commands.ListRepos
+wrangler.commands.Automator
+wrangler.commands.LatestVersion
+wrangler.commands.CreateProject

@@ -1,0 +1,3 @@
+#!/bin/bash -eu
+source `dirname $0`/config.sh
+java -jar $LEVI_PATH automator --user $USER --stash-url $STASH_URL --git-url $GIT_URL --project $STASH_PROJECT $@

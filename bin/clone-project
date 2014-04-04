@@ -1,0 +1,50 @@
+#!/bin/bash
+
+rest() {
+    local content="$1"
+    local url="$2"
+
+
+    STATUSCODE=$(curl -s --user $STASHUSERNAME:$PASSWORD --output /dev/stderr --write-out "%{http_code}" -X POST -H "Content-type: application/json" -d $content $url)
+
+    if [ $STATUSCODE -ge "399" ]; then
+        echo "Failed request with $STATUSCODE"
+        exit 1
+    fi
+}
+
+if [ ! "$#" == 1 ]; then
+   echo "usage: clone-project project_name"
+   echo "clone-project forks an existing project, sets up fork-syncing, does a git clone and sets up remote alias for upstream."
+   exit 1
+fi
+
+if [ -z "$1" ]; then
+    echo "Need to supply project name"
+    exit 1
+fi
+
+PROJECT="$1"
+
+if [ -z "$STASHUSERNAME" ]; then
+   read -p "STASH Username: " STASHUSERNAME
+fi
+
+read -s -p "STASH Password: " PASSWORD
+echo ""
+
+# Fork project
+rest "{\"slug\":\"$PROJECT\"}" "https://stash.dev.cba/rest/api/latest/projects/omnia/repos/$PROJECT"
+
+# Set up fork sync
+rest "{\"enabled\":true}" "https://stash.dev.cba/rest/sync/latest/projects/~$STASHUSERNAME/repos/$PROJECT"
+
+if [ ! -z "$GIT_ROOT" ]; then
+   cd "$GIT_ROOT"
+fi
+
+git clone "ssh://git@stash.dev.cba:7999/~$STASHUSERNAME/$PROJECT.git"
+
+cd "$PROJECT"
+
+git remote add upstream "ssh://git@stash.dev.cba:7999/omnia/$PROJECT.git"
