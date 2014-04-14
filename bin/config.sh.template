@@ -2,19 +2,5 @@
 
 #Path to the assembly
 LEVI_PATH=
-# User name for stash
-USER=
-STASH_URL="https://host/rest"
-# Git url using ssh
-GIT_URL="ssh://host"
-STASH_PROJECT=
-ARTIFACTORY_URL="http://host/artifactory"
-ARTIFACTORY_REPO=
-ARTIFACTORY_USER=$USER
-#Encrypted artifactory password
-ARTIFACTORY_PASSWORD=
-# Command seperated list of artifactory repos
-ARTIFACTORY_REPOS=
-TEAMCITY_URL="http://host/httpAuth/app/rest"
-# Teamcity user needs to include domain.
-TEAMCITY_USER=
+# Path to wrangler.conf
+CONF_PATH=

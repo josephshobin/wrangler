@@ -44,26 +44,27 @@ object Util {
     thunk
   }.toOption
 
-  def automator(repos: List[String], scriptPath: String, gitUrl: String, branch: String, title: String, description: String)
-    (implicit project: StashProject, baseUrl: StashURL, user: StashUser, password: StashPassword)
-      : List[String \/ String] = {
-    repos.map(process(_, scriptPath, gitUrl, branch, title, description))
+  def automator(
+    repos: List[String], scriptPath: String, gitUrl: String, branch: String, title: String,
+    description: String, runPR: String => String \/ Unit
+  ): List[String \/ String] = {
+    repos.map(process(_, scriptPath, gitUrl, branch, title, description, runPR))
   }
 
-  def process(repo: String, scriptPath: String, gitBaseUrl: String, branch: String, title: String, description: String)
-    (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword)
-      : String \/ String = {
+  def process(
+    repo: String, scriptPath: String, gitBaseUrl: String, branch: String, title: String,
+    description: String, runPR: String => String \/ Unit
+  ): String \/ String = {
     println(s"Processing $repo")
     val gitUrl = s"$gitBaseUrl/${repo}.git"
-    val stashUrl = s"$baseurl/$repo"
-    val dst = File.createTempFile("automater-", s"-$repo")
+        val dst = File.createTempFile("automater-", s"-$repo")
     dst.delete
     val r = for {
       g1 <- Git.clone(gitUrl, dst).leftMap(_.toString)
       g2 <- Git.createBranch(g1, branch).leftMap(_.toString)
       _  <- run(List("bash", scriptPath), Some(dst))
-      _  <- Git.push(g2, branch).leftMap(_.toString)
-      _  <- Stash.pullRequest(repo, branch, "master", title, description).leftMap(_.toString)
+      _  <- Git.push(branch)(g2).leftMap(_.toString)
+      _  <- runPR(repo)
     } yield s"Updated $repo"
     r.leftMap(s"Failed to update $repo" + _)
   }

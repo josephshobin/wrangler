@@ -1,0 +1,8 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ -z $1 ]; then
+    java -Dhttp.proxyHost=127.0.0.1 -Dhttp.proxyPort=3127 -jar $LEVI_PATH list-versions --url $EXTERNAL_ARTIFACTORY_URL --repos $EXTERNAL_ARTIFACTORY_REPOS --user $EXTERNAL_ARTIFACTORY_USER --password "\"$EXTERNAL_ARTIFACTORY_PASSWORD\""
+else
+    java -jar $LEVI_PATH list-versions --url $EXTERNAL_ARTIFACTORY_URL --repos $1 --user $EXTERNAL_ARTIFACTORY_USER --password "\"$EXTERNAL_ARTIFACTORY_PASSWORD\""
+fi

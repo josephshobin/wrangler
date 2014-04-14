@@ -14,62 +14,60 @@
 
 package wrangler
 package commands
-
-import java.io.File
-
-import scala.collection.JavaConverters._
-
 import scalaz._, Scalaz._
 
-import org.apache.felix.gogo.commands.{Argument => argument, Command => command, Option => option}
-import org.apache.felix.service.command.CommandSession
+import com.quantifind.sumac.ArgMain
+import com.quantifind.sumac.validation._
 
-import wrangler.api._
+import wrangler.commands.args._
+import wrangler.api.{Automator => AAutomator, _}
 
-@command(scope = "omnia", name = "automator", description = "Given a shell script and a list of repos runs the script against each repo and creates pull requests")
-class Automator extends FunctionalAction {
-  @option(required = true, name = "--user", description = "Stash user name")
-  var userIn: String = null
+class AutomatorArgs extends StashOrGithubArgs {
+  @Required
+  var repos: List[String] = _
+  @Required
+  var branch: String = _
+  @Required
+  var title: String = _
+  @Required
+  var description: String = _
+  @Required
+  var script: String = _
 
-  @option(required = true, name = "--stash-url", description = "Stash url")
-  var stashUrlIn: String = null
-
-  @option(required = true, name = "--git-url", description = "Git url")
-  var gitUrl: String = null
-
-  @option(required = true, name = "--project", description = "Stash base project")
-  var projectIn: String = null
-
-  @option(required = true, name = "--repos", description = "Comma separate list of repos to action")
-  var reposIn: String = null
-  lazy val repos = reposIn.split(",").toList
-
-  @option(required = true, name = "--script", description = "Shell script to execute in each repo")
-  var script: String = null
-
-  @option(required = true, name = "--branch", description = "Branch to do the work in")
-  var branch: String = null
-
-  @option(required = true, name = "--pr-title", description = "Pull request title")
-  var title: String = null
-
-  @option(required = true, name = "--pr-description", description = "Pull request description")
-  var description: String = null
-
-  def execute(session: CommandSession): AnyRef = run(session) {
-    implicit val s = session
-
-    implicit val url     = Tag[String, StashURLT](stashUrlIn)
-    implicit val user    = Tag[String, StashUserT](userIn)
-    implicit val project = Tag[String, StashProjectT](projectIn)
-
-    val (result, pass) = Stash.withAuthentication(p => Stash.listRepos(project)(url, user, p))
-    implicit val password = pass
-    result.leftMap(_.toString).map{ _ =>
-      Util.automator(repos, script, s"$gitUrl/$project", s"automator/$branch", title, description)
-        .map(_.fold(identity, identity))
-        .mkString("\n")
-    }
-  }
+  var targetBranch: String = "master"
 }
 
+object Automator extends ArgMain[AutomatorArgs] {
+  def main(args: AutomatorArgs): Unit = {
+    def createPullRequest(repo: String): Repo[Unit] =
+      if (args.useGithub) {
+        val gh = args.ogithub.get
+
+        val (initial, pass) = Github.retryUnauthorized(gh.tpassword, p => Github.listRepos(gh.org)(gh.tapiUrl, gh.tuser, p))
+
+        Github.pullRequest(
+          repo, args.branch, args.targetBranch, args.title, args.description
+        )(gh.torg, gh.tapiUrl, gh.tuser, pass).map(_ => ())
+      } else {
+        val stash = args.ostash.get
+
+        val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
+
+        Stash.pullRequest(
+          repo, args.branch, args.targetBranch, args.title, args.description
+        )(stash.tproject, stash.tapiUrl, stash.tuser, stash.tpassword).map(_ => ())
+      }
+
+    val gitUrl =
+      if (args.useGithub) s"${args.ogithub.get.gitUrl}/${args.ogithub.get.org}"
+      else s"${args.ostash.get.gitUrl}/${args.ostash.get.project}"
+
+    val result = AAutomator.runAutomator(gitUrl, args.repos, args.targetBranch, args.script, args.branch, args.title, args.description, createPullRequest)
+
+    val successes = result.flatMap(_.toOption).mkString("\n")
+    val failures  = result.flatMap(_.swap.toOption.map(_.msg)).mkString("\n")
+    val formatted = s"$successes\nErrors:\n$failures"
+
+    println(formatted)
+  }
+}

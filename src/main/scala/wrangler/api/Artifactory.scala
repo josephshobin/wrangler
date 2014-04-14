@@ -23,16 +23,26 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 
+import wrangler.data._
+import wrangler.api.rest._
+
 sealed trait ArtifactoryUserT
 sealed trait ArtifactoryPasswordT
 
-case class Artifact(group: String, name: String, version: Version)
+sealed trait ArtifactoryError {
+  def msg: String
+}
 
-case class Version(major: Int, minor: Int, patch: Int, date: String, commish: Option[String]) {
-  def pretty = commish.cata(
-    c => s"$major.$minor.$patch-$date-$c",
-    s"$major.$minor.$patch-$date"
-  )
+case class ArtifactoryAuthenticationError(artifactory: String, repo: String, uri: String) extends ArtifactoryError {
+  val msg = s"Failed to authenticate as against Artifactory $artifactory for repo $repo. Uri: $uri"
+}
+
+case class ArtifactoryUnexpectedError(artifactory: String, repo: String, error: String) extends ArtifactoryError {
+  val msg = s"An unexpected error occurred talking to Artifactory $artifactory for repo $repo. $error"
+}
+
+case class ArtifactoryParseError(artifactory: String, repo: String, line: String, error: String) extends ArtifactoryError {
+  val msg = s"Failed to parse $line from $repo at $artifactory. $error"
 }
 
 object Artifactory {
@@ -41,52 +51,52 @@ object Artifactory {
   type ArtifactoryUser     = String @@ ArtifactoryUserT
   type ArtifactoryPassword = String @@ ArtifactoryPasswordT
 
-
-  implicit val VersionOrdering: Ordering[Version] = Ordering.by(v => (v.major, v.minor, v.patch, v.date))
-
   def listArtifacts(artifactory: String, repo: String)
-    (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Throwable \/ JValue = {
-    Http(url(s"$artifactory/api/storage/$repo?list&deep=1").as_!(user, password) OK Json)
-      .either
-      .apply
-      .disjunction
+    (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Artifactory[JValue] = {
+    Rest.get(s"$artifactory/api/storage/$repo?list&deep=1", user, password) |> liftRest(artifactory, repo)
   }
 
   def listLatest(artifactory: String, repo: String)
-    (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Throwable \/ List[Artifact] = {
-    listArtifacts(artifactory, repo)
-      .map { json =>
-        val versions = (json \\ "uri")
-          .children
-          .tail
-          .map(_.extract[String])
-          .filter(_.endsWith(".jar"))
-          .flatMap(parseVersion(_).toList)
-        getLatest(versions)
-      }
+    (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Artifactory[List[Artifact]] =
+    listLatest(artifactory, List(repo))
+
+  def listLatest(artifactory: String, repos: List[String])
+    (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Artifactory[List[Artifact]] = {
+    repos.map { repo =>
+      listArtifacts(artifactory, repo)
+        .map(json =>
+          (json \\ "uri")
+            .children
+            .tail
+            .map(_.extract[String])
+            .filter(_.endsWith(".jar"))
+            .flatMap(parseVersion(artifactory, repo)(_).toList)
+        )
+    }.sequenceU.map(ls => getLatest(ls.flatten))
   }
 
-  def parseVersion(uri: String): String \/ Artifact = {
+  def parseVersion(artifactory: String, repo: String)(uri: String): Artifactory[Artifact] = {
     val split = uri.drop(1).split("/").toVector
     val l     = split.length
     
-    if (l < 3) s"Does not have expected format $uri".left
+    if (l < 3) ArtifactoryParseError(artifactory, repo, uri, "Does not have expected format .../group/name/version/package").left
     else {
       val versionStr = split(l - 2)
       val group = split.slice(0, l - 3).mkString(".")
       val artifact = split(l - 3)
       val stripped = if (artifact.endsWith("_2.10")) artifact.take(artifact.length - 5) else artifact
 
-      Util.safe {
-        val ss = versionStr.split("\\.|-")
-        val commish = if (ss.length > 4) Some(ss(4)) else None
-        Version(ss(0).toInt, ss(1).toInt, ss(2).toInt, ss(3), commish)
-      }.cata(Artifact(group, stripped, _).right, s"Failed to parse version $versionStr".left)
+      Version.parse(versionStr).leftMap(e => ArtifactoryParseError(artifactory, repo, uri, e.msg)).map(Artifact(group, stripped, _))
     }
   }
-
+  
   def getLatest(artifacts: List[Artifact]): List[Artifact] = {
     val map = artifacts.groupBy(a => (a.group, a.name))
     map.mapValues(_.max(Ordering.by[Artifact, Version](_.version))).values.toList
+  }
+
+  def liftRest[T](artifactory: String, repo: String)(result: Rest[T]): Artifactory[T] = result.leftMap {
+    case Unauthorized(uri) => ArtifactoryAuthenticationError(artifactory, repo, uri)
+    case e                 => ArtifactoryUnexpectedError(artifactory, repo, e.msg)
   }
 }

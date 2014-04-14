@@ -17,102 +17,162 @@ package commands
 
 import java.io.File
 
-import scala.collection.JavaConverters._
-
 import scalaz._, Scalaz._
 
-import org.apache.felix.gogo.commands.{Argument => argument, Command => command, Option => option}
-import org.apache.felix.service.command.CommandSession
+import com.quantifind.sumac.ArgMain
+import com.quantifind.sumac.validation._
 
 import wrangler.api._
+import wrangler.data.Artifact
+import wrangler.commands.args._
 
-@command(scope = "omnia", name = "create-project", description = "Creates a new project")
-class CreateProject extends FunctionalAction {
-  @option(required = true, name = "--name", description = "Project name. Needs to be in the format category.name")
-  var repo: String = null
+class CreateProjectArgs extends StashOrGithubArgs with MultiplArtifactoriesArgs {
+  @Required
+  var repo: String = _
 
-  @option(required = true, name = "--user", description = "Stash user name")
-  var userIn: String = null
+  @Required
+  var g8Template: String = _
 
-  @option(required = true, name = "--stash-url", description = "Stash url")
-  var stashUrlIn: String = null
+  var travisGitPassword: String         = _
+  var travisArtifactoryPassword: String = _
 
-  @option(required = true, name = "--git-url", description = "Git url")
-  var gitUrl: String = null
+  var teamcityTemplate: String = _
 
-  @option(required = true, name = "--teamcity-url", description = "Teamcity url")
-  var teamcityUrlIn: String = null
+  val teamcity = new TeamCityArgs {}
 
-  @option(required = true, name = "--teamcity-user", description = "Teamcity user name")
-  var teamcityUserIn: String = null
+  addValidation {
+    require(!useGithub || (useGithub && travisGitPassword != null), "Need to provided omnia-ci github password for travis to use")
+    require(!useGithub || (useGithub && travisArtifactoryPassword != null), "Need to provided omnia-ci artifactory password for travis to use")
+    require(!useStash || (useStash && teamcityTemplate != null), "Need to provided TeamCity template name to use for build")
+  }
+}
 
-  @option(required = true, name = "--artifactory-url", description = "Artifactory URL")
-  var artifactoryUrl: String = null
+object CreateProject extends ArgMain[CreateProjectArgs] {
+  case class Error(msg: String)
 
-  @option(required = true, name = "--artifactory-password", description = "Artifactory PASSWORD")
-  var artifactoryPasswordIn: String = null
+  type Result[T] = Error \/ T
+  def liftRepo[T](result: Repo[T]): Result[T] = result.leftMap(e => Error(e.msg))
+  def liftGit[T](result: Git[T]): Result[T] = result.leftMap(e => Error(e.toString))
+  def liftArtifactory[T](result: Artifactory[T]): Result[T] = result.leftMap(e => Error(e.msg))
+  def liftTeamcity[T](result: TeamCity[T]): Result[T] = result.leftMap(e => Error(e.msg))
+  def liftOther[T](result: String \/ T): Result[T] = result.leftMap(e => Error(e))
 
-  @option(required = true, name = "--artifactory-repos", description = "Artifactory Repos")
-  var artifactoryReposIn: String = null
+  def main(args: CreateProjectArgs): Unit = {
+    val repo = args.repo
 
-  @option(required = true, name = "--project", description = "Base project")
-  var projectIn: String = null
+    if (new File(repo).exists) {
+      println(s"$repo already exists on local disk")
+      sys.exit(1)
+    }
 
-  @option(required = true, name = "--g8-template", description = "G8 Template to use")
-  var g8Template: String = null
+    println("Retrieving latest versions")
+    val artifacts =
+      args.artifactories.map(a => Artifactory.listLatest(a.url, a.repos)(a.tuser, a.tpassword))
+        .sequenceU
+        .map(as => Artifactory.getLatest(as.flatten))
 
-  @option(required = true, name = "--teamcity-template", description = "TeamCity template to use")
-  var tcTemplate: String = null
 
+    
+    liftArtifactory(artifacts).flatMap(as =>
+      if (args.useGithub) setupGithub(repo, args, as)
+      else setupStash(repo, args, as)
+    ).fold(
+      e => {
+        println(e.msg)
+        sys.exit(1)
+      },
+      identity
+    )
+  }
 
-  def execute(session: CommandSession): AnyRef = run(session) {
-    implicit val s = session
+  def setupGithub(repo: String, args: CreateProjectArgs, artifacts: List[Artifact]): Result[String] = {
+      val github = args.ogithub.get
+      implicit val apiUrl = github.tapiUrl
+      implicit val user   = github.tuser
+      implicit val org    = github.torg
 
-    implicit val stashUrl     = Tag[String, StashURLT](stashUrlIn)
-    implicit val stashUser    = Tag[String, StashUserT](userIn)
-    implicit val stashProject = Tag[String, StashProjectT](projectIn)
-    implicit val teamcityUrl     = Tag[String, TeamCityURLT](teamcityUrlIn)
-    implicit val teamcityUser    = Tag[String, TeamCityUserT](teamcityUserIn)
-    implicit val teamcityProject = Tag[String, TeamCityProjectT](projectIn)
-    implicit val artifactoryUser    = Tag[String, ArtifactoryUserT](userIn)
-    implicit val artifactoryPassword = Tag[String, ArtifactoryPasswordT](artifactoryPasswordIn)
+      val gitUrl = s"${github.gitUrl}/$org/$repo"
+
+      println(s"Creating Github repo $repo")
+      val (initial, pass) = Github.retryUnauthorized(github.tpassword, p => Github.createRepo(repo, github.teamid)(org, apiUrl, user, p))
+      implicit val password = pass
+
+      for {
+        _   <- initial |> liftRepo
+        _    = println(s"Cloning $repo")
+        git <- Git.clone(gitUrl, repo) |> liftGit
+        _    = println("Applying template")
+        _   <- Giter8.deployTemplate(
+                 args.g8Template,
+                 repo,
+                 getVersions(artifacts)
+               ) |> liftOther
+        _    = println("Setting up travis")
+        _   <- Travis.createBuild(s"$org/$repo") |> liftOther
+        _   <- Travis.addSecureVariables(repo, List("OMNIA_CI_PASSWORD" -> args.travisGitPassword, "ARTIFACTORY_PASSWORD" -> args.travisArtifactoryPassword)) |> liftOther
+        _    = println("Pushing changes")
+        _   <- Git.add(".")(git) |> liftGit
+        _   <- Git.commit("Initial commit by Wrangler")(git) |> liftGit
+        _   <- Git.push("master", "origin")(git) |> liftGit
+      } yield s"Created project $repo"
+  }
+
+  def setupStash(repo: String, args: CreateProjectArgs, artifacts: List[Artifact]): Result[String] = {
+    val stash = args.ostash.get
+    implicit val apiUrl  = stash.tapiUrl
+    implicit val user    = stash.tuser
+    implicit val project = stash.tproject
+
+    val teamcity = args.teamcity
+    implicit val tcUrl     = teamcity.turl
+    implicit val tcProject = teamcity.tproject
+    implicit val tcUser    = teamcity.tuser
+
+    val gitUrl = stash.gitUrl
 
     val Array(group, name) = repo.split("\\.")
-    val artifactoryRepos = artifactoryReposIn.split(",").toList
 
-    val (result, pass) = Stash.withAuthentication(p => Stash.createRepo(repo)(stashProject, stashUrl, stashUser, p))
-    implicit val stashPassword = pass
-    implicit val teamcityPassword = Tag[String, TeamCityPasswordT](stashPassword)
+    println(s"Creating Stash repo $repo")
+    val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.createRepo(repo)(project, apiUrl, user, p))
+    implicit val password = pass
+    implicit val tcPassword = Tag[String, TeamCityPasswordT](password)
+
+    val tmp = File.createTempFile("wrangler-", s"-$repo")
+    tmp.delete
+    tmp.mkdir
+    tmp.deleteOnExit
+    val dst = s"$tmp/$name"
 
     for {
-      _         <- result.leftMap(_.toString)
-      if (! new File(repo).exists)
-      _         <- Stash.fork(repo).leftMap(_.toString)
-      _         <- Stash.forkSync(repo).leftMap(_.toString)
-      git       <- Git.clone(s"$gitUrl/~$stashUser/$repo.git", name).leftMap(_.toString)
-      _         <- Git.addRemote(git, "upstream", s"$gitUrl/$stashProject/$repo.git").leftMap(_.toString)
-      _         <- TeamCity.createBuild(group, repo, tcTemplate).leftMap(_.toString)
-      artifacts <- artifactoryRepos.map(Artifactory.listLatest(artifactoryUrl, _)).sequenceU.map(_.flatten).leftMap(_.toString)
-      _         <- Giter8.deployTemplate(
-                     g8Template,
-                     name,
-                     getVersions(artifacts) + ("group" -> group)
-                   )
-      _         <- Util.run(Seq("chmod", "+x", s"$name/sbt"))
-      _         <- Git.add(git, ".").leftMap(_.toString)
-      _         <- Git.commit(git, "Initial commit by Wrangler").leftMap(_.toString)
-      _         <- Git.push(git, "master", "upstream").leftMap(_.toString)
-      _         <- Util.run(Seq("mv", name, repo))
-    } yield s"Successfully created $repo"
-
+      _   <- initial |> liftRepo
+      _   <- Stash.fork(repo) |> liftRepo
+      _   <- Stash.forkSync(repo) |> liftRepo
+      _    = println("Cloning repo")
+      git <- Git.clone(s"$gitUrl/~$user/$repo.git", dst) |> liftGit
+      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo.git") |> liftGit
+      _    = println("Applying template")
+      _   <- Giter8.deployTemplate(
+               args.g8Template,
+               name,
+               getVersions(artifacts) + ("group" -> group),
+               Some(tmp)
+             ) |> liftOther
+      _    = println("Pushing changes")
+      _   <- Git.add(".")(git) |> liftGit
+      _   <- Git.commit("Initial commit by Wrangler")(git) |> liftGit
+      _   <- Git.push("master", "upstream")(git) |> liftGit
+      _   <- Util.run(Seq("mv", dst, repo)) |> liftOther
+      _    = println("Creating TeamCity build")
+      _   <- TeamCity.createBuild(group, repo, args.teamcityTemplate) |> liftTeamcity
+    } yield s"Created $repo"
   }
 
   def getVersions(artifacts: List[Artifact]): Map[String, String] = {
     val dependencies = Map(
-      "omnitool-core" -> "omnitool_version",
-      "tardis"        -> "tardi_version",
-      "omnia-test"    -> "omniatest_version",
-      "uniform-core_2.10_0.13"  -> "uniform_version"
+      //"omnitool-core"          -> "omnitool_version",
+      //"tardis"                 -> "tardis_version",
+      //"omnia-test"             -> "omniatest_version",
+      "uniform-core_2.10_0.13" -> "uniform_version"
     )
 
     artifacts
@@ -121,4 +181,3 @@ class CreateProject extends FunctionalAction {
       .toMap
   }
 }
-

@@ -15,3 +15,26 @@ A collection of scripts around automating the development process.
 * `automator` given a script that makes some changes and commits them, applies the script to the given repos and creates pull requests for the changes.
 
 Modify bin/config.sh to set the right environment variables.
+
+Configuration
+-------------
+
+Wrangler is configured either on the command line, filling in wrangler.conf (see example.conf) or a combination of the two.
+
+Wrangler uses [summac](https://github.com/quantifind/Sumac)ty for command line parsing and [config](https://github.com/typesafehub/config) for parsing config files.
+
+
+Proxy support
+-------------
+
+If the environment variable `http_proxy` or `HTTP_PROXY` is set Wrangler will use that proxy for REST requests.
+
+
+Git authentication
+-------------------
+
+When executing git commands Wrangler will authenticate:
+
+* using ssh keys for ssh urls
+* credentials in ~/.netrc for https urls.
+

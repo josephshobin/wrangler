@@ -20,9 +20,18 @@ version := "0.9.0"
 
 licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.txt"))
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
 
-mainClass := Some("wrangler.Console")
+crossScalaVersions := Seq("2.10.3")
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-unchecked",
+  "-Ywarn-all",
+  "-Xlint",
+  "-feature",
+  "-language:_"
+)
 
 assemblySettings
 
@@ -33,7 +42,10 @@ libraryDependencies ++= Seq(
   "net.databinder.dispatch" %% "dispatch-json4s-native"            % "0.11.0",
   "com.jcraft"               % "jsch.agentproxy.jsch"              % "0.0.7",
   "com.jcraft"               % "jsch.agentproxy.connector-factory" % "0.0.7",
-  "org.apache.karaf.shell"   % "org.apache.karaf.shell.console"    % "2.3.3",
+  "org.scala-sbt"            % "io"                                % "0.13.2",
+  "com.typesafe"             % "config"                            % "1.2.1",
+  "com.quantifind"          %% "sumac"                             % "0.3.0",
+  "com.quantifind"          %% "sumac-ext"                         % "0.3.0",
   "org.slf4j"                % "slf4j-api"                         % "1.7.6",
   "ch.qos.logback"           % "logback-core"                      % "1.1.1",
   "ch.qos.logback"           % "logback-classic"                   % "1.1.1"
@@ -49,4 +61,3 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old: (String => Mer
     case _ => MergeStrategy.first
   }
 }
-

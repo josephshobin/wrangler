@@ -1,0 +1,40 @@
+wrangler {
+travisGitPassword =
+travisArtifactoryPassword =
+
+github {
+  user     =
+  org      =
+  teamid   =
+  apiUrl   =
+  gitUrl   =
+  password =
+}
+
+stash {
+  user    = 
+  project = 
+  apiUrl  = 
+  gitUrl  = 
+}
+
+artifactory {
+  url      =
+  repos    =
+  user     =
+  password =
+}
+
+artifactoryInternal {
+  url      =
+  repos    =
+  user     =
+  password =
+}
+
+teamcity {
+  url     =
+  project = 
+  user    = 
+}
+}

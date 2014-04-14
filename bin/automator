@@ -1,3 +1,8 @@
-#!/bin/bash -eu
+#!/bin/bash
+
+set -e
+set -u
+
 source `dirname $0`/config.sh
-java -jar $LEVI_PATH automator --user $USER --stash-url $STASH_URL --git-url $GIT_URL --project $STASH_PROJECT $@
+
+java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.Automator $@

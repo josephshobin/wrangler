@@ -15,38 +15,28 @@
 package wrangler
 package commands
 
-import java.io.File
+import com.quantifind.sumac.ArgMain
 
-import scala.collection.JavaConverters._
+import wrangler.api.{Stash, Github}
+import wrangler.commands.args.StashOrGithubArgs
 
-import scalaz._, Scalaz._
+class ListReposArgs extends StashOrGithubArgs
 
-import org.apache.felix.gogo.commands.{Argument => argument, Command => command, Option => option}
-import org.apache.felix.service.command.CommandSession
+object ListRepos extends ArgMain[ListReposArgs] {
+  def main(args: ListReposArgs): Unit = {
+    val result = 
+      if (args.useStash) {
+        println("Listing Stash repos")
+        val stash = args.ostash.get
+        val (result, _) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
+        result
+      } else {
+        println("Listing Github repos")
+        val github = args.ogithub.get
+        val (result, _) = Github.retryUnauthorized(github.tpassword, p => Github.listRepos(github.org)(github.tapiUrl, github.tuser, p))
+        result
+      }
 
-import wrangler.api._
-
-@command(scope = "omnia", name = "list-repos", description = "List stash repos")
-class ListRepos extends FunctionalAction {
-  @option(required = true, name = "--user", description = "Stash user name")
-  var userIn: String = null
-
-  @option(name = "--stash-url", description = "Stash url", required = true)
-  var stashUrlIn: String = null
-
-  @option(name = "--project", description = "Stash base project", required = true)
-  var project: String = null
-
-
-  def execute(session: CommandSession): AnyRef = run(session) {
-    implicit val s = session
-
-    implicit val url     = Tag[String, StashURLT](stashUrlIn)
-    implicit val user    = Tag[String, StashUserT](userIn)
-
-    val (result, _) = Stash.withAuthentication(p => Stash.listRepos(project)(url, user, p))
-
-    result.map(_.mkString("\n")).leftMap(_.toString)
+    println(result.fold(_.msg, _.mkString("\n")))
   }
 }
-

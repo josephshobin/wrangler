@@ -44,7 +44,7 @@ object Git {
 
     override protected def getJSch( hc : Host, fs : FS ) = {
       val jsch = super.getJSch(hc, fs)
-      val con  =ConnectorFactory.getDefault().createConnector()
+      val con  = ConnectorFactory.getDefault().createConnector()
       jsch.setIdentityRepository(new RemoteIdentityRepository(con))
       jsch
     }
@@ -52,18 +52,23 @@ object Git {
 
   SshSessionFactory.setInstance(new CustomConfigSessionFactory)
 
-  def clone(src: String, dst: String): Throwable \/ JGit = clone(src, new File(dst))
-  def clone(src: String, dst: File): Throwable \/ JGit = \/.fromTryCatch {
+  val netrccp = new NetrcCredentialsProvider()
+
+
+  def clone(src: String, dst: String): Git[JGit] = clone(src, new File(dst))
+  def clone(src: String, dst: File): Git[JGit] = \/.fromTryCatch {
     JGit
       .cloneRepository()
+      .setCredentialsProvider(netrccp)
       .setURI(src)
       .setDirectory(dst)
       .call()
   }
 
-  def update(repo: JGit): Throwable \/ JGit = \/.fromTryCatch {
+  def update(repo: JGit): Git[JGit] = \/.fromTryCatch {
     repo
       .fetch
+      .setCredentialsProvider(netrccp)
       .setRemote("origin")
       .call()
     
@@ -76,13 +81,14 @@ object Git {
     repo
   }
 
-  def open(path: String): Throwable \/ JGit = \/.fromTryCatch {
+  def open(path: String): Git[JGit] = \/.fromTryCatch {
     new JGit(new RepositoryBuilder().setWorkTree(new File(path)).build)
   }
 
-  def push(repo: JGit, branch: String, remote: String = "origin"): Throwable \/ JGit = \/.fromTryCatch {
+  def push(branch: String, remote: String = "origin")(repo: JGit): Git[JGit] = \/.fromTryCatch {
     repo
       .push
+      .setCredentialsProvider(netrccp)
       .add(branch)
       .setRemote(remote)
       .call
@@ -90,18 +96,18 @@ object Git {
     repo
   }
 
-  def createBranch(repo: JGit, branch: String): Throwable \/ JGit = \/ fromTryCatch {
+  def createBranch(repo: JGit, branch: String, parent: String = "master"): Git[JGit] = \/ fromTryCatch {
     repo
       .checkout
       .setCreateBranch(true)
       .setName(branch)
-      .setStartPoint("master")
+      .setStartPoint(parent)
       .call
 
     repo
   }
 
-  def addRemote(repo: JGit, name: String, url: String): Throwable \/ JGit = \/ fromTryCatch {
+  def addRemote(repo: JGit, name: String, url: String): Git[JGit] = \/ fromTryCatch {
     val conf = repo.getRepository.getConfig
     val remoteConf = new RemoteConfig(conf, name)
     remoteConf.addURI(new URIish(url))
@@ -111,12 +117,12 @@ object Git {
     repo
   }
 
-  def add(repo: JGit, pattern: String): Throwable \/ JGit = \/ fromTryCatch {
+  def add(pattern: String)(repo: JGit): Git[JGit] = \/ fromTryCatch {
     repo.add.addFilepattern(pattern).call
     repo
   }
 
-  def commit(repo: JGit, message: String): Throwable \/ JGit = \/ fromTryCatch {
+  def commit(message: String)(repo: JGit): Git[JGit] = \/ fromTryCatch {
     repo.commit.setMessage(message).call
     repo
   }

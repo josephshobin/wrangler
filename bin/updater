@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+set -u
+
+source `dirname $0`/config.sh
+
+java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.Updater $@

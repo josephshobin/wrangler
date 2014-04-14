@@ -5,5 +5,5 @@ if [ -z $1 ]; then
     echo "Need to specify repo"
     exit -1
 else
-    java -jar $LEVI_PATH clone-existing --user $USER --stash-url $STASH_URL --project $STASH_PROJECT --git-url $GIT_URL --repo $1
+    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.StashForkClone --repo $1
 fi

@@ -1,0 +1,10 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ -z $1 ]; then
+    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.ListRepos --useGithub true
+else
+    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.ListRepos --useGithub true --github.org $1
+fi
+
+

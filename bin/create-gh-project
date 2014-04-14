@@ -1,0 +1,19 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ -z $1 ]; then
+    echo "Need to specify name"
+    exit -1
+else
+    G8TEMPLATE="$HOME/.omnia/commbank-scala.g8"
+    if [ ! -d $G8TEMPLATE ]; then
+        git clone "https://github.com/CommBank/commbank-scala.g8.git" $G8TEMPLATE
+    else
+        cd $G8TEMPLATE
+        git fetch "https://github.com/CommBank/commbank-scala.g8.git" master
+        git reset --hard origin/master
+        cd -
+    fi
+
+    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.CreateProject --useGithub true --g8Template "file://$G8TEMPLATE" --repo $1
+fi

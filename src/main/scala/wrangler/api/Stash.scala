@@ -25,23 +25,12 @@ import org.json4s._
 import org.json4s.JsonDSL._
 import org.json4s.native.JsonMethods._
 
+import wrangler.api.rest._
+
 sealed trait StashURLT
 sealed trait StashUserT
 sealed trait StashPasswordT
 sealed trait StashProjectT
-
-sealed trait RestError
-case object Unauthorized extends RestError {
-  override def toString = s"Stash request: 401 Unauthorized"
-}
-case class RequestError(code: Int, msg: JValue) extends RestError {
-  override def toString = s"Stash RequestError($code, ${pretty(render(msg))})"
-}
-case class NotFound(msg: String) extends RestError
-case class Error(exception: Throwable) extends RestError
-
-
-
 
 object Stash {
   type StashURL      = String @@ StashURLT
@@ -51,45 +40,23 @@ object Stash {
 
   implicit val formats = DefaultFormats
 
-  def command(target: String, content: JValue)(implicit baseurl: StashURL, user: StashUser, password: StashPassword): RestError \/ JValue = {
-    val endpoint = url(baseurl + "/" + target)
-    Http((endpoint.as(user, password).addHeader("content-type", "application/json") << compact(render(content))))
-      .either
-      .apply
-      .disjunction
-      .leftMap(Error.apply)
-      .flatMap(responseHandler)
-  }
+  def post(target: String, content: JValue)(implicit baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] =
+    Rest.post(baseurl + "/" + target, content, user, password)
 
-  def get(target: String)(implicit baseurl: StashURL, user: StashUser, password: StashPassword): RestError \/ JValue = {
-    val endpoint = url(baseurl + "/" + target)
-    Http((endpoint.as(user, password)))(executor)
-      .either
-      .apply
-      .disjunction
-      .leftMap(Error.apply)
-      .flatMap(responseHandler)
-  }
-
-  def responseHandler(response: Response): RestError \/ JValue = response.getStatusCode match {
-    case c if c >= 200 && c < 300 => Json(response).right
-    case 401                      => Unauthorized.left
-    case 404                      => NotFound(response.getResponseBody).left
-    case c                        => RequestError(c, Json(response)).left
-  }
+  def get(target: String)(implicit baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] =
+    Rest.get(baseurl + "/" + target, user, password)
 
   def createRepo(repo: String, forkable: Boolean = true)(implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword)
-      : RestError \/ JValue = {
-    command(s"api/latest/projects/$project/repos", (("name" -> repo) ~ ("forkable" ->  true)))
-  }
+      : Repo[JValue] =
+    post(s"api/latest/projects/$project/repos", (("name" -> repo) ~ ("forkable" ->  true)))
 
   def fork(repo: String)
     (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword)
-      : RestError \/ JValue = {
-    command(s"api/latest/projects/$project/repos/$repo", ("slug" -> repo)) match {
-      case -\/(RequestError(409, msg)) if (msg \\ "message").extract[String].startsWith("This repository URL is already taken by")
-          => msg.right
-      case x @ -\/(RequestError(409, msg)) => {println(msg \\ "message"); x}
+      : Repo[JValue] = {
+    post(s"api/latest/projects/$project/repos/$repo", ("slug" -> repo)) match {
+      case -\/(RequestError(_, 409, msg)) if (Json(msg) \\ "message").extract[String].startsWith("This repository URL is already taken by")
+          => Json(msg).right
+      case x @ -\/(RequestError(_, 409, msg)) => {println(Json(msg) \\ "message"); x}
       case x => x
     }
 
@@ -97,12 +64,12 @@ object Stash {
 
   def forkSync(repo: String)
     (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword)
-      : RestError \/ JValue = {
-    command(s"sync/latest/projects/~$user/repos/$repo", ("enabled" -> true))
+      : Repo[JValue] = {
+    post(s"sync/latest/projects/~$user/repos/$repo", ("enabled" -> true))
   }
 
   def pullRequestFromPersonal(srcRepo: String, srcBranch: String, dstRepo: String, dstBranch: String, title: String, description: String)
-  (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): RestError \/ JValue = {
+  (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] = {
     val content =
       (
         ("title" -> title) ~
@@ -131,11 +98,11 @@ object Stash {
           ("reviewers" -> List())
       )
 
-    command(s"api/latest/projects/$project/repos/$dstRepo/pull-requests", content)
+    post(s"api/latest/projects/$project/repos/$dstRepo/pull-requests", content)
   }
 
   def pullRequest(repo: String, srcBranch: String, dstBranch: String, title: String, description: String)
-  (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): RestError \/ JValue = {
+  (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] = {
     val content =
       (
         ("title" -> title) ~
@@ -169,12 +136,12 @@ object Stash {
         ))
       )
 
-    command(s"api/1.0/projects/$project/repos/$repo/pull-requests", content)
+    post(s"api/1.0/projects/$project/repos/$repo/pull-requests", content)
   }
 
   def setupNewRepo(repo: String)
     (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword)
-      : RestError \/ String = {
+      : Repo[String] = {
     for {
       _ <- Stash.createRepo(repo)
       _ <- Stash.fork(repo)
@@ -184,19 +151,30 @@ object Stash {
 
   def listRepos(project: String)
     (implicit baseurl: StashURL, user: StashUser, password: StashPassword)
-      : RestError \/ List[String] =
+      : Repo[List[String]] =
     get(s"api/latest/projects/$project/repos?limit=1000").map(s => 
       (s \\ "slug").children.map(_.extract[String])
     )
 
-  def withAuthentication[T](command: StashPassword => RestError \/ T): (RestError \/ T, StashPassword) = {
-    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Stash password: ").mkString)
+  def withAuthentication[T](command: StashPassword => Repo[T]): (Repo[T], StashPassword) = {
+    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Stash Pasword: ").mkString)
     command(password) match {
-      case -\/(Unauthorized) => {
-        println("Invalid Stash password")
+      case -\/(Unauthorized(_)) => {
+        println("Invalid stash password")
         withAuthentication(command)
       }
       case x                 => (x, password)
+    }
+  }
+
+  def retryUnauthorized[T](password: StashPassword, command: StashPassword => Repo[T]): (Repo[T], StashPassword) = {
+    command(password) match {
+      case -\/(Unauthorized(_)) => {
+        println("Invalid Stash password. Please try again")
+        val newPassword = Tag[String, StashPasswordT](System.console.readPassword("Stash password: ").mkString)
+        retryUnauthorized(newPassword, command)
+      }
+      case x => (x, password)
     }
   }
 }
