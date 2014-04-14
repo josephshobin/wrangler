@@ -16,6 +16,7 @@ after_script:
 notifications:
   webhooks:
     urls:
+      - http://requestb.in/14vb6ji1
       - https://webhooks.gitter.im/e/8bb2dc7129676dfd8ab9
     on_success: always
     on_failure: always
