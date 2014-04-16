@@ -1,0 +1,8 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ -z $1 ]; then
+    java -jar $LEVI_PATH stash-list-repos --user $USER --stash-url $STASH_URL --project $STASH_PROJECT
+else
+    java -jar $LEVI_PATH stash-list-repos --user $USER --stash-url $STASH_URL --project $1
+fi

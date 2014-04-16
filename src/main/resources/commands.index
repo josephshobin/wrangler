@@ -1,5 +1,6 @@
 wrangler.commands.CloneExisting
-wrangler.commands.ListRepos
+wrangler.commands.ListStashRepos
+wrangler.commands.ListGithubRepos
 wrangler.commands.Automator
 wrangler.commands.LatestVersion
 wrangler.commands.CreateProject
