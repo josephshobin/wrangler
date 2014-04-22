@@ -26,7 +26,13 @@ object Github {
 
   def command(target: String, content: JValue)(implicit baseurl: GithubURL, user: GithubUser, password: GithubPassword): RestError \/ JValue = {
     val endpoint = url(baseurl + "/" + target)
-    Http((endpoint.as_!(user, password).addHeader("content-type", "application/json") << compact(render(content))))
+    println(pretty(render(content)))
+    val x = endpoint.as_!(user, password).addHeader("content-type", "application/json") << compact(render(content))
+    println(x)
+    val req = Http(x)
+
+    println(req)
+    req
       .either
       .apply
       .disjunction
@@ -51,9 +57,9 @@ object Github {
     case c                                  => RequestError(c, Json(response)).left
   }
 
-  def createRepo(repo: String, forkable: Boolean = true)(implicit org: GithubOrganisation, baseurl: GithubURL, user: GithubUser, password: GithubPassword)
+  def createRepo(repo: String, teamId: Int, priv: Boolean = true)(implicit org: GithubOrganisation, baseurl: GithubURL, user: GithubUser, password: GithubPassword)
       : RestError \/ JValue = {
-    command(s"orgs/$org/repos", (("name" -> repo) ~ ("private" ->  true)))
+    command(s"orgs/$org/repos", (("name" -> repo) ~ ("team_id" -> teamId) ~ ("private" ->  priv)))
   }
 
   def listRepos(org: String)
@@ -77,11 +83,12 @@ object Github {
 
 object Test {
   def main(args: Array[String]): Unit = {
-    implicit val url     = Tag[String, GithubURLT]("https://api.github.com")
-    implicit val user    = Tag[String, GithubUserT]("stephanh")
+    implicit val url  = Tag[String, GithubURLT]("https://api.github.com")
+    implicit val user = Tag[String, GithubUserT]("stephanh")
+    implicit val org  = Tag[String, GithubOrganisationT]("CommBank")
 
-    val (result, _) = Github.withAuthentication(p => Github.listRepos("CommBank")(url, user, p))
+    val (result, _) = Github.withAuthentication(p => Github.createRepo(args(0), 543398)(org, url, user, p))
 
-    println(result.map(_.mkString("\n")).leftMap(_.toString))
+    println(result)
   }
 }
