@@ -4,9 +4,20 @@ name := "wrangler"
 
 version := "0.9.0"
 
-scalaVersion := "2.10.3"
+scalaVersion := "2.10.4"
+
+crossScalaVersions := Seq("2.10.3")
 
 mainClass := Some("wrangler.Console")
+
+scalacOptions ++= Seq(
+  "-deprecation",
+  "-unchecked",
+  "-Ywarn-all",
+  "-Xlint",
+  "-feature",
+  "-language:_"
+)
 
 assemblySettings
 
@@ -33,4 +44,3 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old: (String => Mer
     case _ => MergeStrategy.first
   }
 }
-
