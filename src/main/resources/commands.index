@@ -3,4 +3,5 @@ wrangler.commands.ListStashRepos
 wrangler.commands.ListGithubRepos
 wrangler.commands.Automator
 wrangler.commands.LatestVersion
-wrangler.commands.CreateProject
+wrangler.commands.StashCreateProject
+wrangler.commands.GithubCreateProject

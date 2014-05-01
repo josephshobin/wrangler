@@ -16,7 +16,7 @@ else
     fi
 
 
-    java -jar $LEVI_PATH create-project \
+    java -jar $LEVI_PATH stash-create-project \
         --user $USER \
         --stash-url $STASH_URL \
         --git-url $GIT_URL \

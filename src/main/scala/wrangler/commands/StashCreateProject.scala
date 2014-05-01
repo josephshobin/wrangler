@@ -12,8 +12,8 @@ import org.apache.felix.service.command.CommandSession
 
 import wrangler.api._
 
-@command(scope = "omnia", name = "create-project", description = "Creates a new project")
-class CreateProject extends FunctionalAction {
+@command(scope = "omnia", name = "stash-create-project", description = "Creates a new stash project")
+class StashCreateProject extends FunctionalAction {
   @option(required = true, name = "--name", description = "Project name. Needs to be in the format category.name")
   var repo: String = null
 
