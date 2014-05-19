@@ -17,9 +17,11 @@ sealed trait StashPasswordT
 sealed trait StashProjectT
 
 sealed trait RestError
-case object Unauthorized extends RestError
+case object Unauthorized extends RestError {
+  override def toString = s"Stash request: 401 Unauthorized"
+}
 case class RequestError(code: Int, msg: JValue) extends RestError {
-  override def toString = s"RequestError($code, ${pretty(render(msg))})"
+  override def toString = s"Stash RequestError($code, ${pretty(render(msg))})"
 }
 case class NotFound(msg: String) extends RestError
 case class Error(exception: Throwable) extends RestError
@@ -163,7 +165,7 @@ object Stash {
       _ <- Stash.createRepo(repo)
       _ <- Stash.fork(repo)
       _ <- Stash.forkSync(repo)
-    } yield s"Created repo $repo"
+    } yield s"Created Stash repo $repo"
   }
 
   def listRepos(project: String)
@@ -174,10 +176,10 @@ object Stash {
     )
 
   def withAuthentication[T](command: StashPassword => RestError \/ T): (RestError \/ T, StashPassword) = {
-    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Password: ").mkString)
+    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Stash password: ").mkString)
     command(password) match {
       case -\/(Unauthorized) => {
-        println("Invalid password")
+        println("Invalid Stash password")
         withAuthentication(command)
       }
       case x                 => (x, password)

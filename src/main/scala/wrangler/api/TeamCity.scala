@@ -69,6 +69,6 @@ object TeamCity {
     for {
       _ <- TeamCity.postText(s"projects/id:${project}_${group}/buildTypes", name)
       _ <- TeamCity.putText(s"buildTypes/id:${project}_${group}_$id/template", s"id:${project}_${template}")
-    } yield s"Created build for $group.$name"
+    } yield s"Created TeamCity build for $group.$name"
   }
 }
