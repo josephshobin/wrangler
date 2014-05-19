@@ -174,7 +174,7 @@ object Stash {
     )
 
   def withAuthentication[T](command: StashPassword => RestError \/ T): (RestError \/ T, StashPassword) = {
-    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Pasword: ").mkString)
+    implicit val password = Tag[String, StashPasswordT](System.console.readPassword("Password: ").mkString)
     command(password) match {
       case -\/(Unauthorized) => {
         println("Invalid password")
