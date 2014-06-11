@@ -33,8 +33,8 @@ sealed trait ArtifactoryError {
   def msg: String
 }
 
-case class ArtifactoryAuthenticationError(artifactory: String, repo: String, uri: String) extends ArtifactoryError {
-  val msg = s"Failed to authenticate as against Artifactory $artifactory for repo $repo. Uri: $uri"
+case class ArtifactoryAuthenticationError(artifactory: String, repo: String, uri: String, user: String) extends ArtifactoryError {
+  val msg = s"Failed to authenticate as $user against Artifactory $artifactory for repo $repo. Uri: $uri"
 }
 
 case class ArtifactoryUnexpectedError(artifactory: String, repo: String, error: String) extends ArtifactoryError {
@@ -53,7 +53,7 @@ object Artifactory {
 
   def listArtifacts(artifactory: String, repo: String)
     (implicit user: ArtifactoryUser, password: ArtifactoryPassword): Artifactory[JValue] = {
-    Rest.get(s"$artifactory/api/storage/$repo?list&deep=1", user, password) |> liftRest(artifactory, repo)
+    Rest.get(s"$artifactory/api/storage/$repo?list&deep=1", user, password) |> liftRest(artifactory, repo, user )
   }
 
   def listLatest(artifactory: String, repo: String)
@@ -95,8 +95,8 @@ object Artifactory {
     map.mapValues(_.max(Ordering.by[Artifact, Version](_.version))).values.toList
   }
 
-  def liftRest[T](artifactory: String, repo: String)(result: Rest[T]): Artifactory[T] = result.leftMap {
-    case Unauthorized(uri) => ArtifactoryAuthenticationError(artifactory, repo, uri)
+  def liftRest[T](artifactory: String, repo: String, user: String)(result: Rest[T]): Artifactory[T] = result.leftMap {
+    case Unauthorized(uri) => ArtifactoryAuthenticationError(artifactory, repo, uri, user)
     case e                 => ArtifactoryUnexpectedError(artifactory, repo, e.msg)
   }
 }
