@@ -1,7 +1,0 @@
-wrangler.commands.CloneExisting
-wrangler.commands.ListStashRepos
-wrangler.commands.ListGithubRepos
-wrangler.commands.Automator
-wrangler.commands.LatestVersion
-wrangler.commands.StashCreateProject
-wrangler.commands.GithubCreateProject
