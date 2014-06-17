@@ -56,13 +56,17 @@ object Git {
 
 
   def clone(src: String, dst: String): Git[JGit] = clone(src, new File(dst))
-  def clone(src: String, dst: File): Git[JGit] = \/.fromTryCatch {
+  def clone(src: String, dst: File): Git[JGit] = {
+    val correctSrc = if (src.startsWith("ssh://")) src ++ ".git" else src
+
+    \/.fromTryCatch {
     JGit
       .cloneRepository()
       .setCredentialsProvider(netrccp)
-      .setURI(src)
+      .setURI(correctSrc)
       .setDirectory(dst)
       .call()
+    }
   }
 
   def update(repo: JGit): Git[JGit] = \/.fromTryCatch {
@@ -110,7 +114,8 @@ object Git {
   def addRemote(repo: JGit, name: String, url: String): Git[JGit] = \/ fromTryCatch {
     val conf = repo.getRepository.getConfig
     val remoteConf = new RemoteConfig(conf, name)
-    remoteConf.addURI(new URIish(url))
+    val correctUrl = if (url.startsWith("ssh://")) url ++ ".git" else url
+    remoteConf.addURI(new URIish(correctUrl))
     remoteConf.update(conf)
     conf.save
 
