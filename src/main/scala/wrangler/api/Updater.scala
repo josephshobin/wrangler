@@ -128,7 +128,7 @@ object Automator {
     parseUpdaterConfig(configPath) >>= { config =>
       config.artifacts.map(resolveArtifact(_, artifacts)).sequenceU.map { resolvedArtifacts =>
         config.targets.map(repoName => updateProject(
-          gitUrl, repoName, "master", "wranger/version_update", "Automatic version updater",
+          gitUrl, repoName, "master", "wrangler/version_update", "Automatic version updater",
           s"""Updated:\n${resolvedArtifacts.map(_.pretty).mkString("\n")}""", createPullRequest,
           dst => updateVersionsSbt(repoName, dst, resolvedArtifacts).map(_ => ())
         ))
