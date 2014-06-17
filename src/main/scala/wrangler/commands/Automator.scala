@@ -48,13 +48,14 @@ object Automator extends ArgMain[AutomatorArgs] {
         Github.pullRequest(
           repo, args.branch, args.targetBranch, args.title, args.description
         )(gh.torg, gh.tapiUrl, gh.tuser, pass).map(_ => ())
+
       } else {
         val stash = args.ostash.get
 
         val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
 
         Stash.pullRequest(
-          repo, args.branch, args.targetBranch, args.title, args.description
+          repo, args.branch, args.targetBranch, args.title, args.description, stash.reviewers
         )(stash.tproject, stash.tapiUrl, stash.tuser, stash.tpassword).map(_ => ())
       }
 

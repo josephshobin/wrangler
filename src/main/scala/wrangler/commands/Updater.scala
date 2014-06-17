@@ -26,14 +26,15 @@ object Updater extends ArgMain[UpdaterArgs] {
         Github.pullRequest(
           repo, "wrangler/version_update", "master", "Automatic version update", ""
         )(gh.torg, gh.tapiUrl, gh.tuser, pass).map(_ => ())
+
       } else {
         val stash = args.ostash.get
 
         val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
 
         Stash.pullRequest(
-          repo, "wrangler/version_update", "master", "Automatic version update", ""
-        )(stash.tproject, stash.tapiUrl, stash.tuser, stash.tpassword).map(_ => ())
+          repo, "wrangler/version_update", "master", "Automatic version update", "", stash.reviewers
+        )(stash.tproject, stash.tapiUrl, stash.tuser, pass).map(_ => ())
       }
 
     val gitUrl = 

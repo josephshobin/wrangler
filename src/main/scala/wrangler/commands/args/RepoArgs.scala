@@ -42,6 +42,7 @@ trait StashArgs extends WranglerArgs {
   var apiUrl: String           = _
   var gitUrl: String           = _
   var user: String             = _
+  var reviewers: List[String]  = List()
 
   var password: Option[String] = None
 

@@ -68,7 +68,7 @@ object Stash {
     post(s"sync/latest/projects/~$user/repos/$repo", ("enabled" -> true))
   }
 
-  def pullRequestFromPersonal(srcRepo: String, srcBranch: String, dstRepo: String, dstBranch: String, title: String, description: String)
+  def pullRequestFromPersonal(srcRepo: String, srcBranch: String, dstRepo: String, dstBranch: String, title: String, description: String, reviewers: List[String])
   (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] = {
     val content =
       (
@@ -95,13 +95,12 @@ object Stash {
               )
             )
           ) ~
-          ("reviewers" -> List())
+          ("reviewers" -> reviewers.map(name => ("user" -> ("name" -> name))))
       )
-
     post(s"api/latest/projects/$project/repos/$dstRepo/pull-requests", content)
   }
 
-  def pullRequest(repo: String, srcBranch: String, dstBranch: String, title: String, description: String)
+  def pullRequest(repo: String, srcBranch: String, dstBranch: String, title: String, description: String, reviewers: List[String])
   (implicit project: StashProject, baseurl: StashURL, user: StashUser, password: StashPassword): Repo[JValue] = {
     val content =
       (
@@ -128,12 +127,7 @@ object Stash {
             )
           )
         ) ~
-        ("reviewers" -> List(
-          ("user" -> ("name" -> "hoermast")),
-          ("user" -> ("name" -> "andersqu")),
-          ("user" -> ("name" -> "rouesnla")),
-          ("user" -> ("name" -> "lippmebe"))
-        ))
+          ("reviewers" -> reviewers.map(name => ("user" -> ("name" -> name))))
       )
 
     post(s"api/1.0/projects/$project/repos/$repo/pull-requests", content)
