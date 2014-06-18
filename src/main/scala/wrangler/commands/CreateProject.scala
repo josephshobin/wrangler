@@ -148,8 +148,8 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       _   <- Stash.fork(repo) |> liftRepo
       _   <- Stash.forkSync(repo) |> liftRepo
       _    = println("Cloning repo")
-      git <- Git.clone(s"$gitUrl/~$user/$repo.git", dst) |> liftGit
-      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo.git") |> liftGit
+      git <- Git.clone(s"$gitUrl/~$user/$repo", dst) |> liftGit
+      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo") |> liftGit
       _    = println("Applying template")
       _   <- Giter8.deployTemplate(
                args.g8Template,

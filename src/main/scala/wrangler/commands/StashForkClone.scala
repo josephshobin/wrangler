@@ -42,7 +42,7 @@ object StashForkClone extends ArgMain[StashForkCloneArgs] {
       _   <- Stash.forkSync(repo) |> liftRepo
       _    = println(s"Git cloning $repo")
       git <- Git.clone(s"$gitUrl/~$user/$repo.git", repo) |> liftGit
-      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo.git") |> liftGit
+      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo") |> liftGit
     } yield s"Forked and cloned $repo"
 
     println(result.fold(_.msg, identity))
