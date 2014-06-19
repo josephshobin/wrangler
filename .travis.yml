@@ -6,22 +6,21 @@ cache:
   - $HOME/.ivy2
   - $HOME/.m2
 install:
-  - git clone https://omnia-bamboo:$OMNIA_CI_PASSWORD@github.com/CommBank/ci.git
-  - ci/sbt-setup.sh
+- git clone https://github.com/CommBank/ci.git
+- chmod ugo+x ci/*
+- ci/sbt-setup.sh
 script:
-  - sbt -Dsbt.global.base=$TRAVIS_BUILD_DIR/ci '; test; package; assembly'
-  - ci/sbt-deploy.sh
+- sbt -Dsbt.global.base=$TRAVIS_BUILD_DIR/ci '; test; package; assembly'
+- ci/sbt-deploy.sh
 after_script:
-   - rm -rf ci
+- rm -rf ci
 notifications:
   webhooks:
     urls:
-      - http://requestb.in/14vb6ji1
-      - https://webhooks.gitter.im/e/8bb2dc7129676dfd8ab9
+    - https://webhooks.gitter.im/e/8bb2dc7129676dfd8ab9
     on_success: always
     on_failure: always
     on_start: false
 env:
   global:
-  - secure: JZUa9p8B8/kmimIPoCL63SYABgCM5OqPMILKTkQnOtQYcRFzYzEYOwTPDj+2RRoXxLl8+j2X51ePKtR5elV1FP9slnZ5nk+e7vRPxMkqaCB1Ej8BG++Nvgp5fa8qgeK4GdPbaHI66C5ALpPB/bYPVZGXwfyfDRXPoUJzHQNBY/s=
-  - secure: AmOUdWzDm+FEwResixj3ZHxM76ZMzxsSGlK70bBPiwAWbvJ+RYxUdc0Z5CTi8sKyJpBQi7E4+tIFDili1sLN5H231MT3MbtXfeoWvgTa3xrAyUqOtRkHq8R6VOvHWX5AobY3Lb3uyMLyC0Q0tew9BiUBFVphHx5fLO7OH9o1byM=
+    secure: acmFu/OTy91q+AfP6bIZGVzTrtEMdO3onOwl0YiG/aG+Ugc6O54Gzx8MxLDKP6IvaeJ348+zL+39JHXvk2Nn5d1OiNG6MwPzM5hZmJJDCBkG9ezP8ThZaLp6bGUW1jU9nVAydqzEWZlKzhN28nSWNPdc+8eu7Cwo7gQyKLOf1m8=

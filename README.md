@@ -3,7 +3,7 @@ Wrangler
 
 Wrangle different dev tools together and look good doing it.
 
-[![Build Status](https://magnum.travis-ci.com/CommBank/wrangler.svg?token=A3xq7fpHLyey1yCrNASy&branch=master)](https://magnum.travis-ci.com/CommBank/wrangler)
+[![Build Status](https://travis-ci.org/CommBank/wrangler.svg?branch=master)](https://travis-ci.org/CommBank/wrangler)
 [![Gitter chat](https://badges.gitter.im/CommBank/wrangler.png)](https://gitter.im/CommBank/wrangler)
 
 A collection of scripts around automating the development process.
