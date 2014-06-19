@@ -18,13 +18,15 @@ import java.io.File
 
 import scalaz._, Scalaz._
 
+/** API around giter8, the project template tool.*/
 object Giter8 {
+  /** Deploy the named template with the given name and parameters.*/
   def deployTemplate(template: String, name: String, params: Map[String, String], cwd: Option[File] = None): String \/ String = {
     val cmd = Seq("g8", template, s"--name=$name") ++ params.toList.map { case (k, v) => s"--$k=$v" }
 
     for {
       _ <- Util.run(cmd, cwd)
-      _ <- Util.run(List("chmod" , "-x", s"$name/sbt"), cwd)
+      _ <- Util.run(List("chmod" , "-x", s"$name/sbt"), cwd) // Set execute permission on sbt script.
     } yield s"Created $name"
   }
 }

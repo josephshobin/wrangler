@@ -1,6 +1,12 @@
 #!/bin/bash -eu
 
-#Path to the assembly
+# Path to the assembly
 LEVI_PATH=
 # Path to wrangler.conf
 CONF_PATH=
+
+# Path to github gitter8 template
+GH_G8TEMPLATE=
+
+# Path to stash gitter8 template
+STASH_G8TEMPLATE=

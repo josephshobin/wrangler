@@ -9,19 +9,36 @@ import wrangler.api.{Automator => AAutomator, _}
 import wrangler.commands.args._
 import wrangler.data._
 
-
-class UpdaterArgs extends WranglerArgs with StashOrGithubArgs with MultiplArtifactoriesArgs {
+/** Arguments for `Updater`.*/
+class UpdaterArgs extends WranglerArgs with StashOrGithubArgs with MultipleArtifactoriesArgs {
   @Required
   var updaterConfig: String = _
 }
 
+/**
+  * Updates the versions of the dependencies for the sbt projects on Github or Stash.
+  *
+  * It does that by:
+  *  1. Parsing the updater config to extract the artifact versions and repos to update.
+  *  1. Getting the latest list of artifacts from the specified Artifactories.
+  *  1. Resolving the artifacts from the config with version `latest` against the latest versions
+  *     from artifactory.
+  *  1. Clonging each repo.
+  *  1. Updating the versions.
+  *  1. Bumping the minor version.
+  *  1. Creating a pull request with the changes.
+  */
 object Updater extends ArgMain[UpdaterArgs] {
+  /** Runs the command.*/
   def main(args: UpdaterArgs): Unit = {
     def createPullRequest(repo: String): Repo[Unit] =
       if (args.useGithub) {
         val gh = args.ogithub.get
 
-        val (initial, pass) = Github.retryUnauthorized(gh.tpassword, p => Github.listRepos(gh.org)(gh.tapiUrl, gh.tuser, p))
+        val (initial, pass) = Github.retryUnauthorized(
+          gh.tpassword,
+          p => Github.listRepos(gh.org)(gh.tapiUrl, gh.tuser, p)
+        )
 
         Github.pullRequest(
           repo, "wrangler/version_update", "master", "Automatic version update", ""
@@ -30,7 +47,10 @@ object Updater extends ArgMain[UpdaterArgs] {
       } else {
         val stash = args.ostash.get
 
-        val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
+        val (initial, pass) = Stash.retryUnauthorized(
+          stash.tpassword,
+          p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p)
+        )
 
         Stash.pullRequest(
           repo, "wrangler/version_update", "master", "Automatic version update", "", stash.reviewers
@@ -64,5 +84,8 @@ object Updater extends ArgMain[UpdaterArgs] {
     )
 
     println(formatted)
+
+    //Exit manually since dispatch hangs.
+    sys.exit(0)
   }
 }

@@ -26,27 +26,48 @@ import wrangler.api._
 import wrangler.data.Artifact
 import wrangler.commands.args._
 
-class CreateProjectArgs extends StashOrGithubArgs with MultiplArtifactoriesArgs {
+/** Arguments for create project command.*/
+class CreateProjectArgs extends StashOrGithubArgs with MultipleArtifactoriesArgs {
+  /** Name of the project/repo.*/
   @Required
   var repo: String = _
 
+  /** On disk location of the G8 template to use.*/
   @Required
   var g8Template: String = _
 
-  var travisGitPassword: String         = _
+  /** Password for travis to use to authenticate against Artifactory.*/
   var travisArtifactoryPassword: String = _
 
+  /** Name of teamcity build template to use.*/
   var teamcityTemplate: String = _
 
   val teamcity = new TeamCityArgs {}
 
   addValidation {
-    require(!useGithub || (useGithub && travisGitPassword != null), "Need to provided omnia-ci github password for travis to use")
     require(!useGithub || (useGithub && travisArtifactoryPassword != null), "Need to provided omnia-ci artifactory password for travis to use")
-    require(!useStash || (useStash && teamcityTemplate != null), "Need to provided TeamCity template name to use for build")
+    require(!useStash  || (useStash && teamcityTemplate != null), "Need to provided TeamCity template name to use for build")
   }
 }
 
+/**
+  * Creates a new project on Stash or Github.
+  * 
+  * For Github projects, it:
+  *  1. Creates the repo on Github.
+  *  1. Clones the repo.
+  *  1. Applies the specified gitter8 template to the repo with the latest version of uniform.
+  *  1. Adds the encrypted artifactory password to the .travis.yml.
+  *  1. Enabled the travis build.
+  *  1. Commits and pushed the changes to the repo.
+  * 
+  * For Stash projects it expects the repo name to be of the format group.name, e.g. etl.pipelines:
+  *  1. Creates the repo on stash.
+  *  1. Forks the repo and setups fork sync.
+  *  1. Applies the specified gitter8 template to the repo with the latest version of uniform.
+  *  1. Creates a build on TeamCity using the specified build template,
+  *  1. Commits and pushed the changes to the repo.
+  */
 object CreateProject extends ArgMain[CreateProjectArgs] {
   case class Error(msg: String)
 
@@ -57,6 +78,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
   def liftTeamcity[T](result: TeamCity[T]): Result[T] = result.leftMap(e => Error(e.msg))
   def liftOther[T](result: String \/ T): Result[T] = result.leftMap(e => Error(e))
 
+  /** Run the command.*/
   def main(args: CreateProjectArgs): Unit = {
     val repo = args.repo
 
@@ -83,9 +105,14 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       },
       identity
     )
+
+    //Exit manually since dispatch hangs.
+    sys.exit(0)
   }
 
-  def setupGithub(repo: String, args: CreateProjectArgs, artifacts: List[Artifact]): Result[String] = {
+  /** Create the repo for Github. See class level comments for more detail.*/
+  def setupGithub(repo: String, args: CreateProjectArgs, artifacts: List[Artifact])
+      : Result[String] = {
       val github = args.ogithub.get
       implicit val apiUrl = github.tapiUrl
       implicit val user   = github.tuser
@@ -94,7 +121,11 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       val gitUrl = s"${github.gitUrl}/$org/$repo"
 
       println(s"Creating Github repo $repo")
-      val (initial, pass) = Github.retryUnauthorized(github.tpassword, p => Github.createRepo(repo, github.teamid)(org, apiUrl, user, p))
+      val (initial, pass) = Github.retryUnauthorized(
+        github.tpassword,
+        p => Github.createRepo(repo, github.teamid
+        )(org, apiUrl, user, p))
+
       implicit val password = pass
 
       for {
@@ -109,7 +140,10 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
                ) |> liftOther
         _    = println("Setting up travis")
         _   <- Travis.createBuild(s"$org/$repo") |> liftOther
-        _   <- Travis.addSecureVariables(repo, List("OMNIA_CI_PASSWORD" -> args.travisGitPassword, "ARTIFACTORY_PASSWORD" -> args.travisArtifactoryPassword)) |> liftOther
+        _   <- Travis.addSecureVariables(
+                 repo,
+                 List("ARTIFACTORY_PASSWORD" -> args.travisArtifactoryPassword)
+               ) |> liftOther
         _    = println("Pushing changes")
         _   <- Git.add(".")(git) |> liftGit
         _   <- Git.commit("Initial commit by Wrangler")(git) |> liftGit
@@ -117,6 +151,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       } yield s"Created project $repo"
   }
 
+  /** Create the repo for Stash. See class level comments for more detail.*/
   def setupStash(repo: String, args: CreateProjectArgs, artifacts: List[Artifact]): Result[String] = {
     val stash = args.ostash.get
     implicit val apiUrl  = stash.tapiUrl
@@ -133,7 +168,11 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
     val Array(group, name) = repo.split("\\.")
 
     println(s"Creating Stash repo $repo")
-    val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.createRepo(repo)(project, apiUrl, user, p))
+    val (initial, pass) = Stash.retryUnauthorized(
+      stash.tpassword,
+      p => Stash.createRepo(repo)(project, apiUrl, user, p)
+    )
+
     implicit val password = pass
     implicit val tcPassword = Tag[String, TeamCityPasswordT](password)
 
@@ -149,7 +188,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       _   <- Stash.forkSync(repo) |> liftRepo
       _    = println("Cloning repo")
       git <- Git.clone(s"$gitUrl/~$user/$repo", dst) |> liftGit
-      _   <- Git.addRemote(git, "upstream", s"$gitUrl/$project/$repo") |> liftGit
+      _   <- Git.addRemote("upstream", s"$gitUrl/$project/$repo")(git) |> liftGit
       _    = println("Applying template")
       _   <- Giter8.deployTemplate(
                args.g8Template,
@@ -167,6 +206,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
     } yield s"Created $repo"
   }
 
+  /** Get the latest versions for some dependencies based on a list of artifacts.*/
   def getVersions(artifacts: List[Artifact]): Map[String, String] = {
     val dependencies = Map(
       //"omnitool-core"          -> "omnitool_version",

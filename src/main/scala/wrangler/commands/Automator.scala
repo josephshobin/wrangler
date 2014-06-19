@@ -22,6 +22,7 @@ import com.quantifind.sumac.validation._
 import wrangler.commands.args._
 import wrangler.api.{Automator => AAutomator, _}
 
+/** Arguments for `Automator`.*/
 class AutomatorArgs extends StashOrGithubArgs {
   @Required
   var repos: List[String] = _
@@ -37,13 +38,27 @@ class AutomatorArgs extends StashOrGithubArgs {
   var targetBranch: String = "master"
 }
 
+/** 
+  * Runs a shell script against all the specified repos and creates pull request with the changes.
+  * 
+  * It does that by:
+  *  1. Cloning the repo to a temporary location.
+  *  1. Creating and checking out a new branch.
+  *  1. Running the shell script with the repo as working directory.
+  *  1. Commits and pushes the changes.
+  *  1. Creates a pull request against master.
+  */
 object Automator extends ArgMain[AutomatorArgs] {
+  /** Runs the command.*/
   def main(args: AutomatorArgs): Unit = {
     def createPullRequest(repo: String): Repo[Unit] =
       if (args.useGithub) {
         val gh = args.ogithub.get
 
-        val (initial, pass) = Github.retryUnauthorized(gh.tpassword, p => Github.listRepos(gh.org)(gh.tapiUrl, gh.tuser, p))
+        val (initial, pass) = Github.retryUnauthorized(
+          gh.tpassword,
+          p => Github.listRepos(gh.org)(gh.tapiUrl, gh.tuser, p)
+        )
 
         Github.pullRequest(
           repo, args.branch, args.targetBranch, args.title, args.description
@@ -52,7 +67,10 @@ object Automator extends ArgMain[AutomatorArgs] {
       } else {
         val stash = args.ostash.get
 
-        val (initial, pass) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
+        val (initial, pass) = Stash.retryUnauthorized(
+          stash.tpassword,
+          p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p)
+        )
 
         Stash.pullRequest(
           repo, args.branch, args.targetBranch, args.title, args.description, stash.reviewers
@@ -63,12 +81,18 @@ object Automator extends ArgMain[AutomatorArgs] {
       if (args.useGithub) s"${args.ogithub.get.gitUrl}/${args.ogithub.get.org}"
       else s"${args.ostash.get.gitUrl}/${args.ostash.get.project}"
 
-    val result = AAutomator.runAutomator(gitUrl, args.repos, args.targetBranch, args.script, args.branch, args.title, args.description, createPullRequest)
+    val result = AAutomator.runAutomator(
+      gitUrl, args.repos, args.targetBranch, args.script,
+      args.branch, args.title, args.description, createPullRequest
+    )
 
     val successes = result.flatMap(_.toOption).mkString("\n")
     val failures  = result.flatMap(_.swap.toOption.map(_.msg)).mkString("\n")
     val formatted = s"$successes\nErrors:\n$failures"
 
     println(formatted)
+
+    //Exit manually since dispatch hangs.
+    sys.exit(0)
   }
 }

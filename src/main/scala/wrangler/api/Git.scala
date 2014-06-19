@@ -36,13 +36,15 @@ import com.jcraft.jsch.agentproxy.AgentProxyException
 import com.jcraft.jsch.agentproxy.RemoteIdentityRepository
 import com.jcraft.jsch.agentproxy.ConnectorFactory
 
+/** API around git.*/
 object Git {
+  /** SSH Configuration for git that uses the ssh agent credentials.*/
   class CustomConfigSessionFactory extends JschConfigSessionFactory {
     override protected def configure(host: Host, session: Session) {
       session.setConfig("StrictHostKeyChecking", "no")
     }
 
-    override protected def getJSch( hc : Host, fs : FS ) = {
+    override protected def getJSch(hc: Host, fs: FS ) = {
       val jsch = super.getJSch(hc, fs)
       val con  = ConnectorFactory.getDefault().createConnector()
       jsch.setIdentityRepository(new RemoteIdentityRepository(con))
@@ -50,12 +52,16 @@ object Git {
     }
   }
 
+  //Use ssh agent
   SshSessionFactory.setInstance(new CustomConfigSessionFactory)
 
+  // Use .netrc credentials
   val netrccp = new NetrcCredentialsProvider()
 
-
+  /** Clones the given repo to the specified destination.*/
   def clone(src: String, dst: String): Git[JGit] = clone(src, new File(dst))
+
+  /** Clones the given repo to the specified destination.*/
   def clone(src: String, dst: File): Git[JGit] = {
     val correctSrc = if (!src.endsWith(".git")) src ++ ".git" else src
 
@@ -69,6 +75,7 @@ object Git {
     }
   }
 
+  /** Force updates the master branch with the changes on orgin/master.*/
   def update(repo: JGit): Git[JGit] = \/.fromTryCatch {
     repo
       .fetch
@@ -85,10 +92,12 @@ object Git {
     repo
   }
 
+  /** Opens an existing on disk repo.*/
   def open(path: String): Git[JGit] = \/.fromTryCatch {
     new JGit(new RepositoryBuilder().setWorkTree(new File(path)).build)
   }
 
+  /** Pushs the specified branch to a specified remote.*/
   def push(branch: String, remote: String = "origin")(repo: JGit): Git[JGit] = \/.fromTryCatch {
     repo
       .push
@@ -100,18 +109,21 @@ object Git {
     repo
   }
 
-  def createBranch(repo: JGit, branch: String, parent: String = "master"): Git[JGit] = \/ fromTryCatch {
-    repo
-      .checkout
-      .setCreateBranch(true)
-      .setName(branch)
-      .setStartPoint(parent)
-      .call
+  /** Creates a new branch with the specified parent and checks it out.*/
+  def createBranch(branch: String, parent: String = "master")(repo: JGit): Git[JGit] =
+    \/.fromTryCatch {
+      repo
+        .checkout
+        .setCreateBranch(true)
+        .setName(branch)
+        .setStartPoint(parent)
+        .call
 
-    repo
-  }
+      repo
+    }
 
-  def addRemote(repo: JGit, name: String, url: String): Git[JGit] = \/ fromTryCatch {
+  /** Adds a new named remote repo.*/
+  def addRemote(name: String, url: String)(repo: JGit): Git[JGit] = \/ fromTryCatch {
     val conf = repo.getRepository.getConfig
     val remoteConf = new RemoteConfig(conf, name)
     val correctUrl = if (url.startsWith("ssh://")) url ++ ".git" else url
@@ -122,11 +134,13 @@ object Git {
     repo
   }
 
+  /** Does a `git add` for the given pattern.*/
   def add(pattern: String)(repo: JGit): Git[JGit] = \/ fromTryCatch {
     repo.add.addFilepattern(pattern).call
     repo
   }
 
+  /** Commits changes.*/
   def commit(message: String)(repo: JGit): Git[JGit] = \/ fromTryCatch {
     repo.commit.setMessage(message).call
     repo

@@ -24,14 +24,16 @@ import scalaz._, Scalaz._
 
 import Stash._
 
+/** Assorted functions that don't have a place anywhere else.*/
 object Util {
+  /** Prompt for a choice.*/
   def getChoice[T](prompt: String, choices: Map[String, T]): T = {
     val out = choices.keys.toArray
     println(prompt)
     out.zipWithIndex.foreach { case (key, idx) => println(s"${idx+1}: $key") }
     
     Option(readLine("> "))
-      .flatMap(s => safe(s.toInt - 1))
+      .flatMap(s => \/.fromTryCatch(s.toInt - 1).toOption)
       .filter(s => s >= 0 && s < out.length)
       .flatMap(s => choices.get(out(s)))
       .getOrElse {
@@ -40,42 +42,19 @@ object Util {
       }
   }
 
-  def safe[T](thunk: => T): Option[T] = Try {
-    thunk
-  }.toOption
-
-  def automator(
-    repos: List[String], scriptPath: String, gitUrl: String, branch: String, title: String,
-    description: String, runPR: String => String \/ Unit
-  ): List[String \/ String] = {
-    repos.map(process(_, scriptPath, gitUrl, branch, title, description, runPR))
-  }
-
-  def process(
-    repo: String, scriptPath: String, gitBaseUrl: String, branch: String, title: String,
-    description: String, runPR: String => String \/ Unit
-  ): String \/ String = {
-    println(s"Processing $repo")
-    val gitUrl = s"$gitBaseUrl/${repo}.git"
-        val dst = File.createTempFile("automater-", s"-$repo")
-    dst.delete
-    val r = for {
-      g1 <- Git.clone(gitUrl, dst).leftMap(_.toString)
-      g2 <- Git.createBranch(g1, branch).leftMap(_.toString)
-      _  <- run(List("bash", scriptPath), Some(dst))
-      _  <- Git.push(branch)(g2).leftMap(_.toString)
-      _  <- runPR(repo)
-    } yield s"Updated $repo"
-    r.leftMap(s"Failed to update $repo" + _)
-  }
-
+  /** Run the specified shell command. Optionally change the working directory.*/
   def run(cmd: Seq[String], cwd: Option[File] = None): String \/ String = {
     val output = new StringBuilder
     val errors = new StringBuilder
-    val logger = ProcessLogger(out => {output append out; errors append out}, err => errors append err)
-    val ret = Process(cmd, cwd) ! logger
+    val logger = ProcessLogger(
+      out => {
+        output append out
+        errors append out
+      },
+      err => errors append err
+    )
 
-    if (ret == 0) output.toString.right
+    if ((Process(cmd, cwd) ! logger) == 0) output.toString.right
     else errors.toString.left
   }
 }

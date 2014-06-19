@@ -27,36 +27,50 @@ import org.json4s.native.JsonMethods._
 
 import wrangler.api.rest._
 
-
+// Tags for team city information
 sealed trait TeamCityURLT
 sealed trait TeamCityUserT
 sealed trait TeamCityPasswordT
 sealed trait TeamCityProjectT
 
+/** API for making REST requests to TeamCity.*/
 object TeamCity {
   type TeamCityURL      = String @@ TeamCityURLT
   type TeamCityUser     = String @@ TeamCityUserT
   type TeamCityPassword = String @@ TeamCityPasswordT
   type TeamCityProject  = String @@ TeamCityProjectT
 
+  // Default json formats
   implicit val formats = DefaultFormats
 
-  def postText(target: String, content: String)(implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword): TeamCity[JValue] =
+  /** Does an authenticated POST.*/
+  def postText(target: String, content: String)
+    (implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword)
+      : TeamCity[JValue] =
     Rest.postText(baseurl + "/" + target, content, user, password)
 
-  def putText(target: String, content: String)(implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword): TeamCity[JValue] =
+  /** Does an authenticated PUT.*/
+  def putText(target: String, content: String)
+    (implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword)
+      : TeamCity[JValue] =
     Rest.putText(baseurl + "/" + target, content, user, password)
 
-  def get(target: String)(implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword): TeamCity[JValue] = 
+  /** Does an authenticated GET.*/
+  def get(target: String)
+    (implicit baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword)
+      : TeamCity[JValue] =
     Rest.get(baseurl + "/" + target, user, password)
 
+  /** Creates a new build in the specified subproject based on the specified template.*/
   def createBuild(group: String, name: String, template: String)
     (implicit project: TeamCityProject, baseurl: TeamCityURL, user: TeamCityUser, password: TeamCityPassword)
-      : RestError \/ JValue = {
+      : TeamCity[JValue] = {
     val id = name.replaceAll("\\-|\\.", "")
     for {
       _ <- TeamCity.postText(s"projects/id:${project}_${group}/buildTypes", name)
-      _ <- TeamCity.putText(s"buildTypes/id:${project}_${group}_$id/template", s"id:${project}_${template}")
+      _ <- TeamCity.putText(
+        s"buildTypes/id:${project}_${group}_$id/template", s"id:${project}_${template}"
+      )
     } yield s"Created TeamCity build for $group.$name"
   }
 }

@@ -11,18 +11,23 @@ import dispatch.as.json4s._
 import org.json4s.JValue
 import org.json4s.native.JsonMethods.{compact, render}
 
+/** Collection of methods to execute REST requests.*/
 object Rest {
   val ProxyUrl = "http://([^:]*)(?::([0-9]+))?".r
 
+  /** Makes an authenticated POST of json data using the supplied credentials.*/
   def post(uri: String, body: JValue, user: String, password: String): Rest[JValue] = {
-    Http(http(uri, user, password).addHeader("Content-Type", "application/json") << compact(render(body)))
-      .either
+    Http(
+      http(uri, user, password)
+        .addHeader("Content-Type", "application/json") << compact(render(body))
+    ).either
       .apply
       .disjunction
       .leftMap(Error.apply(uri, _))
       .flatMap(responseHandler(uri))
   }
 
+  /* Makes an authenticated GET request, returning a JSON response.*/
   def get(uri: String, user: String, password: String): Rest[JValue] =
     Http((http(uri, user, password)))(executor)
       .either
@@ -31,24 +36,33 @@ object Rest {
       .leftMap(Error.apply(uri, _))
       .flatMap(responseHandler(uri))
 
+  /** Makes an authenticated POST of text data using the supplied credentials.*/
   def postText(uri: String, body: String, user: String, password: String): Rest[JValue] = {
-    Http(http(uri, user, password).addHeader("Content-Type", "text/plain").addHeader("Accept", "application/json") << body)
-      .either
+    Http(
+      http(uri, user, password)
+        .addHeader("Content-Type", "text/plain")
+        .addHeader("Accept", "application/json") << body
+    ).either
       .apply
       .disjunction
       .leftMap(Error.apply(uri, _))
       .flatMap(responseHandler(uri))
   }
 
+  /** Makes an authenticated PUT of text data using the supplied credentials.*/
   def putText(uri: String, body: String, user: String, password: String): Rest[JValue] = {
-    Http(http(uri, user, password).addHeader("Content-Type", "text/plain").addHeader("Accept", "application/json").PUT << body)
-      .either
+    Http(
+      http(uri, user, password)
+        .addHeader("Content-Type", "text/plain")
+        .addHeader("Accept", "application/json").PUT << body
+    ).either
       .apply
       .disjunction
       .leftMap(Error.apply(uri, _))
       .flatMap(responseHandler(uri))
   }
 
+  /** If the environment variable http_proxy or HTTP_PROXY adds proxy information to the request.*/
   def http(uri: String, user: String, password: String) = {
     val init = url(uri).as_!(user, password)
 

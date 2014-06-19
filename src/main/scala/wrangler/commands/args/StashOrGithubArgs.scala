@@ -2,8 +2,12 @@ package wrangler.commands.args
 
 import com.quantifind.sumac.validation._
 
+/** Arguments to use either Github or Stash repo.*/
 trait StashOrGithubArgs extends WranglerArgs with RepoArgs {
+  /** Use Github.*/
   var useGithub:     Boolean = false
+
+  /** Use Stash.*/
   var useStash:      Boolean = false
 
   addValidation {

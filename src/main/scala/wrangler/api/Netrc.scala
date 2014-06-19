@@ -11,6 +11,10 @@ import org.eclipse.jgit.errors.UnsupportedCredentialItem
 
 case class BasicLogin(id: String, password: String)
 
+/**
+  * Parses netrc credentials to use for authentication.
+  * By default it will parse `~/.netrc`
+  */
 object Netrc {
     val defaultPath = s"""${System.getProperty("user.home")}/.netrc"""
 
@@ -36,6 +40,7 @@ object Netrc {
   }
 }
 
+/** Netrc credential provider for JGit.*/
 class NetrcCredentialsProvider(path: String = Netrc.defaultPath) extends CredentialsProvider {
   override def isInteractive = false
 

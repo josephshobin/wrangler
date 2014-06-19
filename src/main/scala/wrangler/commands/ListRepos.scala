@@ -20,23 +20,36 @@ import com.quantifind.sumac.ArgMain
 import wrangler.api.{Stash, Github}
 import wrangler.commands.args.StashOrGithubArgs
 
+/** Arguments for `ListRepos`.*/
 class ListReposArgs extends StashOrGithubArgs
 
+/** List all the repos belonging to the specified stash project or github org.*/
 object ListRepos extends ArgMain[ListReposArgs] {
   def main(args: ListReposArgs): Unit = {
     val result = 
       if (args.useStash) {
         println("Listing Stash repos")
         val stash = args.ostash.get
-        val (result, _) = Stash.retryUnauthorized(stash.tpassword, p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p))
+        val (result, _) = Stash.retryUnauthorized(
+          stash.tpassword,
+          p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p)
+        )
+        
         result
       } else {
         println("Listing Github repos")
         val github = args.ogithub.get
-        val (result, _) = Github.retryUnauthorized(github.tpassword, p => Github.listRepos(github.org)(github.tapiUrl, github.tuser, p))
+        val (result, _) = Github.retryUnauthorized(
+          github.tpassword,
+          p => Github.listRepos(github.org)(github.tapiUrl, github.tuser, p)
+        )
+
         result
       }
 
     println(result.fold(_.msg, _.mkString("\n")))
+
+    //Exit manually since dispatch hangs.
+    sys.exit(0)
   }
 }
