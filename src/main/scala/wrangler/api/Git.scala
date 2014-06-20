@@ -57,7 +57,7 @@ object Git {
 
   def clone(src: String, dst: String): Git[JGit] = clone(src, new File(dst))
   def clone(src: String, dst: File): Git[JGit] = {
-    val correctSrc = if (src.startsWith("ssh://")) src ++ ".git" else src
+    val correctSrc = if (!src.endsWith(".git")) src ++ ".git" else src
 
     \/.fromTryCatch {
     JGit
