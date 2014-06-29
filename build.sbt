@@ -61,3 +61,13 @@ mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old: (String => Mer
     case _ => MergeStrategy.first
   }
 }
+
+site.settings
+
+ghpages.settings
+
+git.remoteRepo := "git@github.com:CommBank/wrangler.git"
+
+site.includeScaladoc()
+
+SiteKeys.siteMappings <++= baseDirectory map { (b) => Seq((b / "README.md", "README.md")) }

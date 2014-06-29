@@ -11,8 +11,9 @@ install:
 - ci/sbt-setup.sh
 script:
 - sbt -Dsbt.global.base=$TRAVIS_BUILD_DIR/ci '; test; package; assembly'
-- ci/sbt-deploy.sh
 after_script:
+- ci/sbt-deploy.sh
+- sbt -Dsbt.global.base=$TRAVIS_BUILD_DIR/ci ghpages-push-site
 - rm -rf ci
 notifications:
   webhooks:
