@@ -1,0 +1,892 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>api - wrangler.api</title>
+          <meta name="description" content="api - wrangler.api" />
+          <meta name="keywords" content="api wrangler.api" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'wrangler.api.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="wrangler">wrangler</a></p>
+        <h1>api</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">api</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <span class="toggle">Linear Supertypes</span>
+          <div class="superTypes hiddenContent"><span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
+        </div></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        <div id="order">
+              <span class="filtertype">Ordering</span>
+              <ol>
+                
+                <li class="alpha in"><span>Alphabetic</span></li>
+                <li class="inherit out"><span>By inheritance</span></li>
+              </ol>
+            </div>
+        <div id="ancestors">
+                <span class="filtertype">Inherited<br />
+                </span>
+                <ol id="linearization">
+                  <li class="in" name="wrangler.api"><span>api</span></li><li class="in" name="scala.AnyRef"><span>AnyRef</span></li><li class="in" name="scala.Any"><span>Any</span></li>
+                </ol>
+              </div><div id="ancestors">
+            <span class="filtertype"></span>
+            <ol>
+              <li class="hideall out"><span>Hide All</span></li>
+              <li class="showall in"><span>Show all</span></li>
+            </ol>
+            <a href="http://docs.scala-lang.org/overviews/scaladoc/usage.html#members" target="_blank">Learn more about member selection</a>
+          </div>
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="wrangler.api.Artifactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Artifactory[T]=scalaz.\/[wrangler.api.ArtifactoryError,T]"></a>
+      <a id="Artifactory[T]:Artifactory[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Artifactory</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="ArtifactoryError.html" class="extype" name="wrangler.api.ArtifactoryError">ArtifactoryError</a>, <span class="extype" name="wrangler.api.Artifactory.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryAuthenticationError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryAuthenticationErrorextendsArtifactoryErrorwithProductwithSerializable"></a>
+      <a id="ArtifactoryAuthenticationError:ArtifactoryAuthenticationError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryAuthenticationError.html"><span class="name">ArtifactoryAuthenticationError</span></a><span class="params">(<span name="artifactory">artifactory: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="uri">uri: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="user">user: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="ArtifactoryError.html" class="extype" name="wrangler.api.ArtifactoryError">ArtifactoryError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryError" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryErrorextendsAnyRef"></a>
+      <a id="ArtifactoryError:ArtifactoryError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryError.html"><span class="name">ArtifactoryError</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryParseError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryParseErrorextendsArtifactoryErrorwithProductwithSerializable"></a>
+      <a id="ArtifactoryParseError:ArtifactoryParseError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryParseError.html"><span class="name">ArtifactoryParseError</span></a><span class="params">(<span name="artifactory">artifactory: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="line">line: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="ArtifactoryError.html" class="extype" name="wrangler.api.ArtifactoryError">ArtifactoryError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryPasswordT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryPasswordTextendsAnyRef"></a>
+      <a id="ArtifactoryPasswordT:ArtifactoryPasswordT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryPasswordT.html"><span class="name">ArtifactoryPasswordT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryUnexpectedError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryUnexpectedErrorextendsArtifactoryErrorwithProductwithSerializable"></a>
+      <a id="ArtifactoryUnexpectedError:ArtifactoryUnexpectedError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryUnexpectedError.html"><span class="name">ArtifactoryUnexpectedError</span></a><span class="params">(<span name="artifactory">artifactory: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="ArtifactoryError.html" class="extype" name="wrangler.api.ArtifactoryError">ArtifactoryError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.ArtifactoryUserT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="ArtifactoryUserTextendsAnyRef"></a>
+      <a id="ArtifactoryUserT:ArtifactoryUserT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="ArtifactoryUserT.html"><span class="name">ArtifactoryUserT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.BasicLogin" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="BasicLoginextendsProductwithSerializable"></a>
+      <a id="BasicLogin:BasicLogin"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="BasicLogin.html"><span class="name">BasicLogin</span></a><span class="params">(<span name="id">id: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="password">password: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Config" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ConfigextendsProductwithSerializable"></a>
+      <a id="Config:Config"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Config.html"><span class="name">Config</span></a><span class="params">(<span name="targets">targets: <span class="extype" name="scala.List">List</span>[<span class="extype" name="scala.Predef.String">String</span>]</span>, <span name="artifacts">artifacts: <span class="extype" name="scala.List">List</span>[<a href="UnresolvedArtifact.html" class="extype" name="wrangler.api.UnresolvedArtifact">UnresolvedArtifact</a>]</span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Config for <code>Automator.runUpdater</code> which has the list of repos to update
+and the artifacts to update.</p>
+    </li><li name="wrangler.api.Git" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Git[T]=scalaz.\/[Throwable,T]"></a>
+      <a id="Git[T]:Git[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Git</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<span class="extype" name="scala.Throwable">Throwable</span>, <span class="extype" name="wrangler.api.Git.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.GithubOrganisationT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GithubOrganisationTextendsAnyRef"></a>
+      <a id="GithubOrganisationT:GithubOrganisationT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GithubOrganisationT.html"><span class="name">GithubOrganisationT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.GithubPasswordT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GithubPasswordTextendsAnyRef"></a>
+      <a id="GithubPasswordT:GithubPasswordT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GithubPasswordT.html"><span class="name">GithubPasswordT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.GithubURLT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GithubURLTextendsAnyRef"></a>
+      <a id="GithubURLT:GithubURLT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GithubURLT.html"><span class="name">GithubURLT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.GithubUserT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="GithubUserTextendsAnyRef"></a>
+      <a id="GithubUserT:GithubUserT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="GithubUserT.html"><span class="name">GithubUserT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Latest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="LatestextendsUnresolvedArtifactwithProductwithSerializable"></a>
+      <a id="Latest:Latest"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Latest.html"><span class="name">Latest</span></a><span class="params">(<span name="group">group: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="UnresolvedArtifact.html" class="extype" name="wrangler.api.UnresolvedArtifact">UnresolvedArtifact</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.NetrcCredentialsProvider" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="NetrcCredentialsProviderextendsCredentialsProvider"></a>
+      <a id="NetrcCredentialsProvider:NetrcCredentialsProvider"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">class</span>
+      </span>
+      <span class="symbol">
+        <a href="NetrcCredentialsProvider.html"><span class="name">NetrcCredentialsProvider</span></a><span class="result"> extends <span class="extype" name="org.eclipse.jgit.transport.CredentialsProvider">CredentialsProvider</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Netrc credential provider for JGit.</p>
+    </li><li name="wrangler.api.ParsedVersion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ParsedVersion[T]=scalaz.\/[wrangler.data.VersionParseError,T]"></a>
+      <a id="ParsedVersion[T]:ParsedVersion[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">ParsedVersion</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="../data/VersionParseError.html" class="extype" name="wrangler.data.VersionParseError">VersionParseError</a>, <span class="extype" name="wrangler.api.ParsedVersion.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Repo" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Repo[T]=scalaz.\/[wrangler.api.rest.RestError,T]"></a>
+      <a id="Repo[T]:Repo[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Repo</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="rest/RestError.html" class="extype" name="wrangler.api.rest.RestError">RestError</a>, <span class="extype" name="wrangler.api.Repo.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Rest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Rest[T]=scalaz.\/[wrangler.api.rest.RestError,T]"></a>
+      <a id="Rest[T]:Rest[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Rest</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="rest/RestError.html" class="extype" name="wrangler.api.rest.RestError">RestError</a>, <span class="extype" name="wrangler.api.Rest.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Sbt" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Sbt[T]=scalaz.\/[wrangler.api.SbtError,T]"></a>
+      <a id="Sbt[T]:Sbt[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Sbt</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="SbtError.html" class="extype" name="wrangler.api.SbtError">SbtError</a>, <span class="extype" name="wrangler.api.Sbt.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.SbtError" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="SbtErrorextendsAnyRef"></a>
+      <a id="SbtError:SbtError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtError.html"><span class="name">SbtError</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.SbtNoVersionString" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SbtNoVersionStringextendsSbtErrorwithProductwithSerializable"></a>
+      <a id="SbtNoVersionString:SbtNoVersionString"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtNoVersionString.html"><span class="name">SbtNoVersionString</span></a><span class="params">(<span name="project">project: <a href="SbtProject.html" class="extype" name="wrangler.api.SbtProject">SbtProject</a></span>)</span><span class="result"> extends <a href="SbtError.html" class="extype" name="wrangler.api.SbtError">SbtError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.SbtProject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SbtProjectextendsProductwithSerializable"></a>
+      <a id="SbtProject:SbtProject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtProject.html"><span class="name">SbtProject</span></a><span class="params">(<span name="dir">dir: <span class="extype" name="java.io.File">File</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">API around interacting with a specific sbt project.</p>
+    </li><li name="wrangler.api.SbtUnexpectedError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SbtUnexpectedErrorextendsSbtErrorwithProductwithSerializable"></a>
+      <a id="SbtUnexpectedError:SbtUnexpectedError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtUnexpectedError.html"><span class="name">SbtUnexpectedError</span></a><span class="params">(<span name="project">project: <a href="SbtProject.html" class="extype" name="wrangler.api.SbtProject">SbtProject</a></span>, <span name="exception">exception: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result"> extends <a href="SbtError.html" class="extype" name="wrangler.api.SbtError">SbtError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.SbtVersionParseError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SbtVersionParseErrorextendsSbtErrorwithProductwithSerializable"></a>
+      <a id="SbtVersionParseError:SbtVersionParseError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtVersionParseError.html"><span class="name">SbtVersionParseError</span></a><span class="params">(<span name="project">project: <a href="SbtProject.html" class="extype" name="wrangler.api.SbtProject">SbtProject</a></span>, <span name="line">line: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="SbtError.html" class="extype" name="wrangler.api.SbtError">SbtError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Specific" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SpecificextendsUnresolvedArtifactwithProductwithSerializable"></a>
+      <a id="Specific:Specific"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Specific.html"><span class="name">Specific</span></a><span class="params">(<span name="artifact">artifact: <a href="../data/GenericArtifact.html" class="extype" name="wrangler.data.GenericArtifact">GenericArtifact</a></span>)</span><span class="result"> extends <a href="UnresolvedArtifact.html" class="extype" name="wrangler.api.UnresolvedArtifact">UnresolvedArtifact</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.StashPasswordT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="StashPasswordTextendsAnyRef"></a>
+      <a id="StashPasswordT:StashPasswordT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StashPasswordT.html"><span class="name">StashPasswordT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.StashProjectT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="StashProjectTextendsAnyRef"></a>
+      <a id="StashProjectT:StashProjectT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StashProjectT.html"><span class="name">StashProjectT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.StashURLT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="StashURLTextendsAnyRef"></a>
+      <a id="StashURLT:StashURLT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StashURLT.html"><span class="name">StashURLT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.StashUserT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="StashUserTextendsAnyRef"></a>
+      <a id="StashUserT:StashUserT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="StashUserT.html"><span class="name">StashUserT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.TeamCity" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TeamCity[T]=scalaz.\/[wrangler.api.rest.RestError,T]"></a>
+      <a id="TeamCity[T]:TeamCity[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">TeamCity</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="rest/RestError.html" class="extype" name="wrangler.api.rest.RestError">RestError</a>, <span class="extype" name="wrangler.api.TeamCity.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.TeamCityPasswordT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TeamCityPasswordTextendsAnyRef"></a>
+      <a id="TeamCityPasswordT:TeamCityPasswordT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TeamCityPasswordT.html"><span class="name">TeamCityPasswordT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.TeamCityProjectT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TeamCityProjectTextendsAnyRef"></a>
+      <a id="TeamCityProjectT:TeamCityProjectT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TeamCityProjectT.html"><span class="name">TeamCityProjectT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.TeamCityURLT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TeamCityURLTextendsAnyRef"></a>
+      <a id="TeamCityURLT:TeamCityURLT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TeamCityURLT.html"><span class="name">TeamCityURLT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.TeamCityUserT" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="TeamCityUserTextendsAnyRef"></a>
+      <a id="TeamCityUserT:TeamCityUserT"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="TeamCityUserT.html"><span class="name">TeamCityUserT</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UnresolvedArtifact" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UnresolvedArtifactextendsAnyRef"></a>
+      <a id="UnresolvedArtifact:UnresolvedArtifact"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="UnresolvedArtifact.html"><span class="name">UnresolvedArtifact</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Updater" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Updater[T]=scalaz.\/[wrangler.api.UpdaterError,T]"></a>
+      <a id="Updater[T]:Updater[T]"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">type</span>
+      </span>
+      <span class="symbol">
+        <span class="name">Updater</span><span class="tparams">[<span name="T">T</span>]</span><span class="result"> = <span class="extype" name="scalaz.\/">\/</span>[<a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a>, <span class="extype" name="wrangler.api.Updater.T">T</span>]</span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterArtifactoryAuthenticationError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterArtifactoryAuthenticationErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterArtifactoryAuthenticationError:UpdaterArtifactoryAuthenticationError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterArtifactoryAuthenticationError.html"><span class="name">UpdaterArtifactoryAuthenticationError</span></a><span class="params">(<span name="error">error: <a href="ArtifactoryAuthenticationError.html" class="extype" name="wrangler.api.ArtifactoryAuthenticationError">ArtifactoryAuthenticationError</a></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterArtifactoryParseError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterArtifactoryParseErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterArtifactoryParseError:UpdaterArtifactoryParseError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterArtifactoryParseError.html"><span class="name">UpdaterArtifactoryParseError</span></a><span class="params">(<span name="error">error: <a href="ArtifactoryParseError.html" class="extype" name="wrangler.api.ArtifactoryParseError">ArtifactoryParseError</a></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterArtifactoryUnexpectedError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterArtifactoryUnexpectedErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterArtifactoryUnexpectedError:UpdaterArtifactoryUnexpectedError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterArtifactoryUnexpectedError.html"><span class="name">UpdaterArtifactoryUnexpectedError</span></a><span class="params">(<span name="error">error: <a href="ArtifactoryUnexpectedError.html" class="extype" name="wrangler.api.ArtifactoryUnexpectedError">ArtifactoryUnexpectedError</a></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterError" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="UpdaterErrorextendsAnyRef"></a>
+      <a id="UpdaterError:UpdaterError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterError.html"><span class="name">UpdaterError</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterGitError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterGitErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterGitError:UpdaterGitError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterGitError.html"><span class="name">UpdaterGitError</span></a><span class="params">(<span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Throwable">Throwable</span></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterParseError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterParseErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterParseError:UpdaterParseError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterParseError.html"><span class="name">UpdaterParseError</span></a><span class="params">(<span name="in">in: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterRepoError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterRepoErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterRepoError:UpdaterRepoError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterRepoError.html"><span class="name">UpdaterRepoError</span></a><span class="params">(<span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <a href="rest/RestError.html" class="extype" name="wrangler.api.rest.RestError">RestError</a></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterResolveError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterResolveErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterResolveError:UpdaterResolveError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterResolveError.html"><span class="name">UpdaterResolveError</span></a><span class="params">(<span name="latest">latest: <a href="Latest.html" class="extype" name="wrangler.api.Latest">Latest</a></span>, <span name="versions">versions: <span class="extype" name="scala.List">List</span>[<a href="../data/Artifact.html" class="extype" name="wrangler.data.Artifact">Artifact</a>]</span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterSbtError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterSbtErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterSbtError:UpdaterSbtError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterSbtError.html"><span class="name">UpdaterSbtError</span></a><span class="params">(<span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="sbtError">sbtError: <a href="SbtError.html" class="extype" name="wrangler.api.SbtError">SbtError</a></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.UpdaterShellError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="UpdaterShellErrorextendsUpdaterErrorwithProductwithSerializable"></a>
+      <a id="UpdaterShellError:UpdaterShellError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="UpdaterShellError.html"><span class="name">UpdaterShellError</span></a><span class="params">(<span name="repo">repo: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="UpdaterError.html" class="extype" name="wrangler.api.UpdaterError">UpdaterError</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="wrangler.api.Artifactory" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Artifactory"></a>
+      <a id="Artifactory:Artifactory"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Artifactory$.html"><span class="name">Artifactory</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API for making REST requests to Artifactory.</p>
+    </li><li name="wrangler.api.Automator" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Automator"></a>
+      <a id="Automator:Automator"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Automator$.html"><span class="name">Automator</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Automator can make changes to a list of git repos, such as applying a shell script to each repo
+or updating a versions of artifacts, commit those changes and raise pull requests for each of
+the repos.</p>
+    </li><li name="wrangler.api.Git" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Git"></a>
+      <a id="Git:Git"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Git$.html"><span class="name">Git</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API around git.</p>
+    </li><li name="wrangler.api.Giter8" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Giter8"></a>
+      <a id="Giter8:Giter8"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Giter8$.html"><span class="name">Giter8</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API around giter8, the project template tool.</p>
+    </li><li name="wrangler.api.Github" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Github"></a>
+      <a id="Github:Github"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Github$.html"><span class="name">Github</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API for making REST requests to Github.</p>
+    </li><li name="wrangler.api.Netrc" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Netrc"></a>
+      <a id="Netrc:Netrc"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Netrc$.html"><span class="name">Netrc</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Parses netrc credentials to use for authentication.</p>
+    </li><li name="wrangler.api.SbtProject" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SbtProject"></a>
+      <a id="SbtProject:SbtProject"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SbtProject$.html"><span class="name">SbtProject</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.api.Stash" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Stash"></a>
+      <a id="Stash:Stash"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Stash$.html"><span class="name">Stash</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API for making REST requests to Stash.</p>
+    </li><li name="wrangler.api.TeamCity" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="TeamCity"></a>
+      <a id="TeamCity:TeamCity"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="TeamCity$.html"><span class="name">TeamCity</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">API for making REST requests to TeamCity.</p>
+    </li><li name="wrangler.api.Travis" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Travis"></a>
+      <a id="Travis:Travis"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Travis$.html"><span class="name">Travis</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Shells out to the travis client for ease of use.</p>
+    </li><li name="wrangler.api.Util" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Util"></a>
+      <a id="Util:Util"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Util$.html"><span class="name">Util</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Assorted functions that don't have a place anywhere else.</p>
+    </li><li name="wrangler.api.rest" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="rest"></a>
+      <a id="rest:rest"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a href="rest/package.html"><span class="name">rest</span></a>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        <div class="parent" name="scala.AnyRef">
+              <h3>Inherited from <span class="extype" name="scala.AnyRef">AnyRef</span></h3>
+            </div><div class="parent" name="scala.Any">
+              <h3>Inherited from <span class="extype" name="scala.Any">Any</span></h3>
+            </div>
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>

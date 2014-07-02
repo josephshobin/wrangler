@@ -1,0 +1,277 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>data - wrangler.data</title>
+          <meta name="description" content="data - wrangler.data" />
+          <meta name="keywords" content="data wrangler.data" />
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+          
+      <link href="../../lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="../../lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript">
+         if(top === self) {
+            var url = '../../index.html';
+            var hash = 'wrangler.data.package';
+            var anchor = window.location.hash;
+            var anchor_opt = '';
+            if (anchor.length >= 1)
+              anchor_opt = '@' + anchor.substring(1);
+            window.location.href = url + '#' + hash + anchor_opt;
+         }
+   	  </script>
+    
+        </head>
+        <body class="value">
+      <div id="definition">
+        <img src="../../lib/package_big.png" />
+        <p id="owner"><a href="../package.html" class="extype" name="wrangler">wrangler</a></p>
+        <h1>data</h1>
+      </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">data</span>
+      </span>
+      </h4>
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      <div id="mbrsel">
+        <div id="textfilter"><span class="pre"></span><span class="input"><input id="mbrsel-input" type="text" accesskey="/" /></span><span class="post"></span></div>
+        
+        
+        <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in"><span>Public</span></li><li class="all out"><span>All</span></li></ol>
+          </div>
+      </div>
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        <div id="types" class="types members">
+              <h3>Type Members</h3>
+              <ol><li name="wrangler.data.Artifact" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="ArtifactextendsProductwithSerializable"></a>
+      <a id="Artifact:Artifact"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="Artifact.html"><span class="name">Artifact</span></a><span class="params">(<span name="group">group: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="version">version: <a href="Version.html" class="extype" name="wrangler.data.Version">Version</a></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Maven style artifact with well understood versioning.</p>
+    </li><li name="wrangler.data.CommishVersion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="CommishVersionextendsVersionwithProductwithSerializable"></a>
+      <a id="CommishVersion:CommishVersion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="CommishVersion.html"><span class="name">CommishVersion</span></a><span class="params">(<span name="major">major: <span class="extype" name="scala.Int">Int</span></span>, <span name="minor">minor: <span class="extype" name="scala.Int">Int</span></span>, <span name="patch">patch: <span class="extype" name="scala.Int">Int</span></span>, <span name="date">date: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="commish">commish: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Version.html" class="extype" name="wrangler.data.Version">Version</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Semantic version plus date and short commit hash (commish) major.</p>
+    </li><li name="wrangler.data.DateVersion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="DateVersionextendsVersionwithProductwithSerializable"></a>
+      <a id="DateVersion:DateVersion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="DateVersion.html"><span class="name">DateVersion</span></a><span class="params">(<span name="major">major: <span class="extype" name="scala.Int">Int</span></span>, <span name="minor">minor: <span class="extype" name="scala.Int">Int</span></span>, <span name="patch">patch: <span class="extype" name="scala.Int">Int</span></span>, <span name="date">date: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <a href="Version.html" class="extype" name="wrangler.data.Version">Version</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Semantic version plus date major.</p>
+    </li><li name="wrangler.data.GenericArtifact" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="GenericArtifactextendsProductwithSerializable"></a>
+      <a id="GenericArtifact:GenericArtifact"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="GenericArtifact.html"><span class="name">GenericArtifact</span></a><span class="params">(<span name="group">group: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="name">name: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="version">version: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Maven style artifact where the version is just a string.</p>
+    </li><li name="wrangler.data.SemanticVersion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SemanticVersionextendsVersionwithProductwithSerializable"></a>
+      <a id="SemanticVersion:SemanticVersion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="SemanticVersion.html"><span class="name">SemanticVersion</span></a><span class="params">(<span name="major">major: <span class="extype" name="scala.Int">Int</span></span>, <span name="minor">minor: <span class="extype" name="scala.Int">Int</span></span>, <span name="patch">patch: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result"> extends <a href="Version.html" class="extype" name="wrangler.data.Version">Version</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Semantic version, major.</p>
+    </li><li name="wrangler.data.Version" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="VersionextendsAnyRef"></a>
+      <a id="Version:Version"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="Version.html"><span class="name">Version</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Well understood version.</p>
+    </li><li name="wrangler.data.VersionLevel" visbl="pub" data-isabs="true" fullComment="no" group="Ungrouped">
+      <a id="VersionLevelextendsAnyRef"></a>
+      <a id="VersionLevel:VersionLevel"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier">sealed </span>
+        <span class="kind">trait</span>
+      </span>
+      <span class="symbol">
+        <a href="VersionLevel.html"><span class="name">VersionLevel</span></a><span class="result"> extends <span class="extype" name="scala.AnyRef">AnyRef</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Version levels from semantic versioning such as Major, Minor, Patch.</p>
+    </li><li name="wrangler.data.VersionParseError" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="VersionParseErrorextendsProductwithSerializable"></a>
+      <a id="VersionParseError:VersionParseError"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">case class</span>
+      </span>
+      <span class="symbol">
+        <a href="VersionParseError.html"><span class="name">VersionParseError</span></a><span class="params">(<span name="line">line: <span class="extype" name="scala.Predef.String">String</span></span>, <span name="error">error: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result"> extends <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li></ol>
+            </div>
+
+        
+
+        <div id="values" class="values members">
+              <h3>Value Members</h3>
+              <ol><li name="wrangler.data.Artifact" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Artifact"></a>
+      <a id="Artifact:Artifact"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Artifact$.html"><span class="name">Artifact</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">Artifact companion object.</p>
+    </li><li name="wrangler.data.Major" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Major"></a>
+      <a id="Major:Major"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Major$.html"><span class="name">Major</span></a><span class="result"> extends <a href="VersionLevel.html" class="extype" name="wrangler.data.VersionLevel">VersionLevel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.data.Minor" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Minor"></a>
+      <a id="Minor:Minor"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Minor$.html"><span class="name">Minor</span></a><span class="result"> extends <a href="VersionLevel.html" class="extype" name="wrangler.data.VersionLevel">VersionLevel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.data.Patch" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Patch"></a>
+      <a id="Patch:Patch"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Patch$.html"><span class="name">Patch</span></a><span class="result"> extends <a href="VersionLevel.html" class="extype" name="wrangler.data.VersionLevel">VersionLevel</a> with <span class="extype" name="scala.Product">Product</span> with <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      
+    </li><li name="wrangler.data.SemanticVersion" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="SemanticVersion"></a>
+      <a id="SemanticVersion:SemanticVersion"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="SemanticVersion$.html"><span class="name">SemanticVersion</span></a><span class="result"> extends <span class="extype" name="scala.Serializable">Serializable</span></span>
+      </span>
+      </h4>
+      <p class="comment cmt">SemanticVersion companion object.</p>
+    </li><li name="wrangler.data.Version" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="Version"></a>
+      <a id="Version:Version"></a>
+      <h4 class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">object</span>
+      </span>
+      <span class="symbol">
+        <a href="Version$.html"><span class="name">Version</span></a>
+      </span>
+      </h4>
+      <p class="comment cmt">Version companion object.</p>
+    </li></ol>
+            </div>
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+      <script defer="defer" type="text/javascript" id="jquery-js" src="../../lib/jquery.js"></script><script defer="defer" type="text/javascript" id="jquery-ui-js" src="../../lib/jquery-ui.js"></script><script defer="defer" type="text/javascript" id="tools-tooltip-js" src="../../lib/tools.tooltip.js"></script><script defer="defer" type="text/javascript" id="template-js" src="../../lib/template.js"></script>
+    </body>
+      </html>
