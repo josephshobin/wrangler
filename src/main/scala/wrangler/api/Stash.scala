@@ -32,6 +32,7 @@ sealed trait StashURLT
 sealed trait StashUserT
 sealed trait StashPasswordT
 sealed trait StashProjectT
+sealed trait StashReviewersT
 
 /** API for making REST requests to Stash.*/
 object Stash {
@@ -187,7 +188,7 @@ object Stash {
     */
   def withAuthentication[T](command: StashPassword => Repo[T]): (Repo[T], StashPassword) = {
     val password =
-      Tag[String, StashPasswordT](System.console.readPassword("Stash Pasword: ").mkString)
+      Tag[String, StashPasswordT](System.console.readPassword("Stash Password: ").mkString)
     
     command(password) match {
       case -\/(Unauthorized(_)) => {

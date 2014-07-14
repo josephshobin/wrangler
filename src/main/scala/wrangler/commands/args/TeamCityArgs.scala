@@ -37,6 +37,6 @@ trait TeamCityArgs extends WranglerArgs {
     * `TeamCityPasswordT`.
     */
   lazy val tpassword = Tag[String, TeamCityPasswordT](password.getOrElse {
-    System.console.readPassword("TeamCity pasword: ").mkString
+    System.console.readPassword("TeamCity password: ").mkString
   })
 }

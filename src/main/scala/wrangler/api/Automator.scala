@@ -183,6 +183,29 @@ object Automator {
   }
 
   /**
+   * Copy files from the fully qualified directory given by fromDir to the relative directory
+   * in the repo given by destRepoDir.
+   */
+  def copyFilesToRepo(fromDir: String, destRepoDir: String, repoDir: File, repo: String) = {
+    val destDir =  repoDir.getPath() + "/" + destRepoDir
+    Util.run(List("cp", "-r", s"${fromDir}", s"${destDir}"))
+  }
+
+  /**
+   * Adds the files in the given directory to the specified repo and creates a pull request
+   * with the changes using the specified `pullRequest` function.
+   */
+  def runAddFiles(
+    gitUrl: String, repos: List[String], targetBranch: String, sourceDir: String, destRepoDir: String,
+    branch: String, title: String, description: String, pullReqest: String => Repo[Unit]
+  ): List[Updater[String]] = {
+    repos.map(repo => updateProject(
+      gitUrl, repo, targetBranch, branch, title, description, pullReqest,
+      dst => copyFilesToRepo(sourceDir, destRepoDir, dst, repo).map(_ => ()) |> liftShell(repo)
+    ))
+  }
+
+  /**
     * Updates the versions of all the specified artifacts of the list of git repos, who must be sbt
     * projects. It creates pull requests with the changes using the specified `pullRequest` function.
     */

@@ -23,7 +23,7 @@ import wrangler.commands.args._
 import wrangler.api.{Automator => AAutomator, _}
 
 /** Arguments for `Automator`.*/
-class AutomatorArgs extends StashOrGithubArgs {
+class AddFilesArgs extends StashOrGithubArgs {
   @Required
   var repos: List[String] = _
   @Required
@@ -33,24 +33,27 @@ class AutomatorArgs extends StashOrGithubArgs {
   @Required
   var description: String = _
   @Required
-  var script: String = _
+  var sourceDir: String = _
+  @Required
+  var destRepoDir: String = _
 
   var targetBranch: String = "master"
 }
 
-/** 
-  * Runs a shell script against all the specified repos and creates pull request with the changes.
-  * 
-  * It does that by:
-  *  1. Cloning the repo to a temporary location.
-  *  1. Creating and checking out a new branch.
-  *  1. Running the shell script with the repo as working directory.
-  *  1. Commits and pushes the changes.
-  *  1. Creates a pull request against master.
-  */
-object Automator extends ArgMain[AutomatorArgs] {
+/**
+ * Runs a shell script against all the specified repos and creates pull request with the changes.
+ *
+ * It does that by:
+ *  1. Cloning the repo to a temporary location.
+ *  2. Creating and checking out a new branch.
+ *  3. Adding file to the new branch.
+ *  4. Commits and pushes the changes.
+ *  5. Creates a pull request against master.
+ */
+object AddFiles extends ArgMain[AddFilesArgs] {
   /** Runs the command.*/
-  def main(args: AutomatorArgs): Unit = {
+  def main(args: AddFilesArgs): Unit = {
+    println(args.stash.reviewers)
     def createPullRequest(repo: String): Repo[Unit] =
       if (args.useGithub) {
         val gh = args.ogithub.get
@@ -72,6 +75,8 @@ object Automator extends ArgMain[AutomatorArgs] {
           p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p)
         )
 
+        println("Stash reviewers: "+stash.treviewers.mkString(" "))
+
         Stash.pullRequest(
           repo, args.branch, args.targetBranch, args.title, args.description, stash.treviewers
         )(stash.tproject, stash.tapiUrl, stash.tuser, stash.tpassword).map(_ => ())
@@ -81,8 +86,8 @@ object Automator extends ArgMain[AutomatorArgs] {
       if (args.useGithub) s"${args.ogithub.get.gitUrl}/${args.ogithub.get.org}"
       else s"${args.ostash.get.gitUrl}/${args.ostash.get.project}"
 
-    val result = AAutomator.runAutomator(
-      gitUrl, args.repos, args.targetBranch, args.script,
+    val result = AAutomator.runAddFiles(
+      gitUrl, args.repos, args.targetBranch, args.sourceDir, args.destRepoDir,
       args.branch, args.title, args.description, createPullRequest
     )
 

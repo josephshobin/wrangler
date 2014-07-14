@@ -65,7 +65,7 @@ object Github {
     */
   def withAuthentication[T](command: GithubPassword => Repo[T]): (Repo[T], GithubPassword) = {
     val password =
-      Tag[String, GithubPasswordT](System.console.readPassword("Github Pasword: ").mkString)
+      Tag[String, GithubPasswordT](System.console.readPassword("Github Password: ").mkString)
 
     command(password) match {
       case -\/(Unauthorized(_)) => {

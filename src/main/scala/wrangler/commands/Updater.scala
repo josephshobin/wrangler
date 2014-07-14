@@ -53,7 +53,7 @@ object Updater extends ArgMain[UpdaterArgs] {
         )
 
         Stash.pullRequest(
-          repo, "wrangler/version_update", "master", "Automatic version update", "", stash.reviewers
+          repo, "wrangler/version_update", "master", "Automatic version update", "", stash.treviewers
         )(stash.tproject, stash.tapiUrl, stash.tuser, pass).map(_ => ())
       }
 

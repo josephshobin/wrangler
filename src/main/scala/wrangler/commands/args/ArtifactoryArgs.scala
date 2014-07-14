@@ -33,7 +33,7 @@ trait ArtifactoryArgs extends FieldArgs {
     * `ArtifactoryPasswordT`.
     */
   lazy val tpassword = Tag[String, ArtifactoryPasswordT](password.getOrElse {
-    System.console.readPassword("Artifactory Pasword: ").mkString
+    System.console.readPassword("Artifactory Password: ").mkString
   })
 }
 

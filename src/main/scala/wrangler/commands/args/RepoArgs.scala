@@ -59,7 +59,7 @@ trait GithubArgs extends WranglerArgs {
     * `GithubPasswordT`.
     */
   lazy val tpassword = Tag[String, GithubPasswordT](password.getOrElse {
-    System.console.readPassword("Github pasword: ").mkString
+    System.console.readPassword("Github password: ").mkString
   })
 }
 
@@ -74,7 +74,7 @@ trait StashArgs extends WranglerArgs {
   var gitUrl: String           = _
 
   /** Reviewers to add to a Stash pull request.*/
-  var reviewers: List[String]  = List()
+  var reviewers: String  = _
 
   /** Stash user.*/
   var user: String             = _
@@ -99,11 +99,13 @@ trait StashArgs extends WranglerArgs {
   /** Type tagged user.*/
   lazy val tuser     = Tag[String, StashUserT](user)
 
+  lazy val treviewers = Tag[List[String], StashReviewersT](reviewers.split(",").toList)
+
   /**
     * Prompts for password if password wasn't specified and returns it tagged as
     * `StashPasswordT`.
     */
   lazy val tpassword = Tag[String, StashPasswordT](password.getOrElse {
-    System.console.readPassword("Stash pasword: ").mkString
+    System.console.readPassword("Stash password: ").mkString
   })
 }

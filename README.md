@@ -64,7 +64,7 @@ stash {
   project   = omnia
   apiUrl    = "https://stash.dev/rest"
   gitUrl    = "ssh://git@stash.dev:7999"
-  reviewers = [ hoermast ]
+  reviewers = "hoermast"
   //password = // Leave blank to be promoted for password instead
 }
 
@@ -130,5 +130,40 @@ The command  to update Github repos then is `updater --useGithub true --updaterC
 Unfortunately running automator using the bash command has some issues when it comes to strings with
 spaces. Instead is has to be run directly, e.g. `java  -cp wrangler-assembly-0.9.0.jar:bin wrangler.commands.Automator --repos uniform,piped --branch travis_fix --title "Travis fix" --description "Travis fix" --useGithub true --script /path/travis_fix.sh`.
 
+###AddFiles
 
+For a given repo, create a branch, add files in a specified directory, commit and create a pull request against the original branch.
 
+##### wrangler.conf
+```
+wrangler {
+  stash {
+    user = goofy
+    project = omnia
+    apiUrl = "https://stash.dev.cba/rest"
+    gitUrl = "http://stash.dev.cba/scm"
+    password = "my_password"
+    reviewers = "mickey,donald"
+  }
+}
+```
+
+##### .netrc
+```
+machine stash.dev.cba
+login goofy
+password my_password
+```
+
+The command to add files to the repo is:
+```
+java -cp wrangler-assembly-1.0.0.jar:. wrangler.commands.AddFiles \
+  --repos ops.dosomething \
+  --branch my_shiny_new_model \
+  --title "A test Model" \
+  --description "Model for testing" \
+  --useStash true \
+  --sourceDir /Users/goofy/dev/wrangler_test/lobster_model \
+  --destRepoDir src/main/models
+```
+This will create a branch `my_shiny_new_model` on the repo `ops.dosomething` and add the directory `Users/goofy/dev/wrangler_test/lobster_model` and it's contents to the location `src/main/models` within the new branch. It will then create a pull request with reviewers `mickey` and `donald`. Note that `--sourceDir` must be a fully qualified path.
