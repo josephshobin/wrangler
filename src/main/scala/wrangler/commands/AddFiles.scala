@@ -45,15 +45,14 @@ class AddFilesArgs extends StashOrGithubArgs {
  *
  * It does that by:
  *  1. Cloning the repo to a temporary location.
- *  2. Creating and checking out a new branch.
- *  3. Adding file to the new branch.
- *  4. Commits and pushes the changes.
- *  5. Creates a pull request against master.
+ *  1. Creating and checking out a new branch.
+ *  1. Adding file to the new branch.
+ *  1. Commits and pushes the changes.
+ *  1. Creates a pull request against master.
  */
 object AddFiles extends ArgMain[AddFilesArgs] {
   /** Runs the command.*/
   def main(args: AddFilesArgs): Unit = {
-    println(args.stash.reviewers)
     def createPullRequest(repo: String): Repo[Unit] =
       if (args.useGithub) {
         val gh = args.ogithub.get
@@ -74,8 +73,6 @@ object AddFiles extends ArgMain[AddFilesArgs] {
           stash.tpassword,
           p => Stash.listRepos(stash.project)(stash.tapiUrl, stash.tuser, p)
         )
-
-        println("Stash reviewers: "+stash.treviewers.mkString(" "))
 
         Stash.pullRequest(
           repo, args.branch, args.targetBranch, args.title, args.description, stash.treviewers

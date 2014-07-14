@@ -186,9 +186,9 @@ object Automator {
    * Copy files from the fully qualified directory given by fromDir to the relative directory
    * in the repo given by destRepoDir.
    */
-  def copyFilesToRepo(fromDir: String, destRepoDir: String, repoDir: File, repo: String) = {
+  def copyFilesToRepo(fromDir: String, destRepoDir: String, repoDir: File) = {
     val destDir =  repoDir.getPath() + "/" + destRepoDir
-    Util.run(List("cp", "-r", s"${fromDir}", s"${destDir}"))
+    Util.run(List("cp", "-r", fromDir, destDir))
   }
 
   /**
@@ -201,7 +201,7 @@ object Automator {
   ): List[Updater[String]] = {
     repos.map(repo => updateProject(
       gitUrl, repo, targetBranch, branch, title, description, pullReqest,
-      dst => copyFilesToRepo(sourceDir, destRepoDir, dst, repo).map(_ => ()) |> liftShell(repo)
+      dst => copyFilesToRepo(sourceDir, destRepoDir, dst).map(_ => ()) |> liftShell(repo)
     ))
   }
 
