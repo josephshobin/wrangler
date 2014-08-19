@@ -104,7 +104,7 @@ Git authentication
 
 When executing git commands Wrangler will authenticate:
 
-* using ssh keys for ssh urls
+* using ssh keys for ssh urls. Ensure that you add your key to the ssh agent using `ssh-add path_to_key`.
 * credentials in ~/.netrc for https urls.
 
 Examples
