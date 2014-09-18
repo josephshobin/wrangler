@@ -10,7 +10,7 @@ else
         git clone $GH_G8TEMPLATE $G8TEMPLATE
     else
         cd $G8TEMPLATE
-        git fetch GH_G8TEMPLATE master
+        git fetch $GH_G8TEMPLATE master
         git reset --hard origin/master
         cd -
     fi
