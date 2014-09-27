@@ -65,7 +65,7 @@ stash {
   apiUrl    = "https://stash.dev/rest"
   gitUrl    = "ssh://git@stash.dev:7999"
   reviewers = "hoermast"
-  //password = // Leave blank to be promoted for password instead
+  //password = // Leave blank to be prompted for password instead
 }
 
 artifactory {
