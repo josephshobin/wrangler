@@ -1,0 +1,19 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ -z $1 ]; then
+    echo "Need to specify name"
+    exit -1
+else
+    G8TEMPLATE="$HOME/.omnia/tooling.omnia.g8"
+    if [ ! -d $G8TEMPLATE ]; then
+        git clone $ETL_G8TEMPLATE $G8TEMPLATE
+    else
+        cd $G8TEMPLATE
+        git fetch $ETL_G8TEMPLATE master
+        git reset --hard origin/master
+        cd -
+    fi
+
+    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.CreateProject --useStash true --g8Template "file://$G8TEMPLATE" --teamcityTemplate BuildReleaseTemplate --repo $1
+fi
