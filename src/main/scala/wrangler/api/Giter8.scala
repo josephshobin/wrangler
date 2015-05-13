@@ -23,8 +23,8 @@ object Giter8 {
   /** Deploy the named template with the given name and parameters.*/
   def deployTemplate(template: String, name: String, params: Map[String, String], cwd: Option[File] = None): String \/ String = {
 
-    val domain = name.substring(name.indexOf("-") + 1)
     val source = name.substring((name.indexOf(".") + 1), name.indexOf("-"))
+    val domain = name.substring(name.indexOf("-") + 1)
 
     val cmd = Seq("g8", template, s"--source=$source", s"--domain=$domain" , s"--name=$name") ++ params.toList.map { case (k, v) => s"--$k=$v" }
 
