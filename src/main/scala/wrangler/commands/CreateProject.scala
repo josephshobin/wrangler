@@ -92,8 +92,6 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       args.artifactories.map(a => Artifactory.listLatest(a.url, a.repos)(a.tuser, a.tpassword))
         .sequenceU
         .map(as => Artifactory.getLatest(as.flatten))
-
-
     
     liftArtifactory(artifacts).flatMap(as =>
       if (args.useGithub) setupGithub(repo, args, as)
@@ -172,7 +170,6 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       stash.tpassword,
       p => Stash.createRepo(repo)(project, apiUrl, user, p)
     )
-
     implicit val password = pass
     implicit val tcPassword = Tag[String, TeamCityPasswordT](password)
 
@@ -184,6 +181,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
 
     for {
       _   <- initial |> liftRepo
+      _    = println("Forking repo")
       _   <- Stash.fork(repo) |> liftRepo
       _   <- Stash.forkSync(repo) |> liftRepo
       _    = println("Cloning repo")
@@ -212,7 +210,8 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       //"omnitool-core"          -> "omnitool_version",
       //"tardis"                 -> "tardis_version",
       //"omnia-test"             -> "omniatest_version",
-      "uniform-core_2.10_0.13" -> "uniform_version"
+      "uniform-core_2.10_0.13" -> "uniform_version",
+      "etl-util"               -> "util_version"
     )
 
     artifacts
