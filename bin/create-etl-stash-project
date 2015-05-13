@@ -5,7 +5,7 @@ if [ -z $1 ]; then
     echo "Need to specify name"
     exit -1
 else
-    G8TEMPLATE="$HOME/.omnia/tooling.omnia.g8"
+    G8TEMPLATE="$HOME/.ometl/tooling.etl.g8"
     if [ ! -d $G8TEMPLATE ]; then
         git clone $ETL_G8TEMPLATE $G8TEMPLATE
     else
