@@ -15,5 +15,5 @@ else
         cd -
     fi
 
-    java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.CreateProject --useStash true --g8Template "file://$G8TEMPLATE" --teamcityTemplate BuildReleaseTemplate --repo $1
+   java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.CreateProject --useStash true --g8Template "file://$G8TEMPLATE" --teamcityTemplate EtlBuildReleaseTemplate --repo $1
 fi
