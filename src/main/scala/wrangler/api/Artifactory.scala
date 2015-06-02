@@ -108,7 +108,7 @@ object Artifactory {
         artifactory, repo, uri, "Does not have expected format .../group/name/version/package"
       ).left
     else {
-      /**
+       /*
         * The URI pattern identified from artifactory
         *  Pattern 1: /group/artifact/scala_2.10/sbt_0.13/versionStr/jars/etl-plugin.jar
         *  Pattern 2: /au/com/cba/omnia/artifact_2.10/versionStr/etl-util.jar
@@ -121,7 +121,7 @@ object Artifactory {
                             else split(0)
       val artifact        = if (isNotIvyRelease) split(l - 3)
                             else split(1)
-      /** Regex pattern used to support 2.xx  Scala versions */
+      /* Regex pattern used to support 2.xx  Scala versions */
       val stripped        = if (artifact.matches(s".*_2.[0-9]{2}")) artifact.take(artifact.length - 5)
                             else artifact
 
