@@ -108,18 +108,22 @@ object Artifactory {
         artifactory, repo, uri, "Does not have expected format .../group/name/version/package"
       ).left
     else {
-//      val versionStr = split(l - 2)
-//      val group      = split.slice(0, l - 3).mkString(".")
-//      val artifact   = split(l - 3)
-//      val stripped   = if (artifact.endsWith("_2.10")) artifact.take(artifact.length - 5) else artifact
-
-      val isIvyRelease = split(0).equals("au")
-      val versionStr   = if (isIvyRelease) split(l - 2) else split(l - 3)
-      val group        = if (isIvyRelease) split.slice(0, l - 3).mkString(".") else split(0)
-      val artifact     = if (isIvyRelease) split(l - 3) else split(1)
-      val stripped     = if (artifact.endsWith("_2.10")) artifact.take(artifact.length - 5) else artifact
-
-
+       /*
+        * The URI pattern identified from artifactory
+        *  Pattern 1: /group/artifact/scala_2.10/sbt_0.13/versionStr/jars/etl-plugin.jar
+        *  Pattern 2: /au/com/cba/omnia/artifact_2.10/versionStr/etl-util.jar
+        * Check for the intial directory "au" to identify the release pattern
+        */
+      val isNotIvyRelease = split(0).equals("au")
+      val versionStr      = if (isNotIvyRelease) split(l - 2)
+                            else split(l - 3)
+      val group           = if (isNotIvyRelease) split.slice(0, l - 3).mkString(".")
+                            else split(0)
+      val artifact        = if (isNotIvyRelease) split(l - 3)
+                            else split(1)
+      /* Regex pattern used to support 2.xx  Scala versions */
+      val stripped        = if (artifact.matches(s".*_2.[0-9]{2}")) artifact.take(artifact.length - 5)
+                            else artifact
 
       Version.parse(versionStr)
         .leftMap(e => ArtifactoryParseError(artifactory, repo, uri, e.msg))
