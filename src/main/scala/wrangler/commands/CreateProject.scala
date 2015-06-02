@@ -93,7 +93,6 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
         .sequenceU
         .map(as => Artifactory.getLatest(as.flatten))
 
-
     liftArtifactory(artifacts).flatMap(as =>
       if (args.useGithub) setupGithub(repo, args, as)
       else setupStash(repo, args, as)
