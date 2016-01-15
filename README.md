@@ -134,6 +134,10 @@ By default `automator` accepts a list of repositories to act on as a comma-separ
 
 The `--dry-run true` argument will not create pull requests, allowing automation scripts to be safely tested.
 
+###list-stash-repos and list-github-repos
+
+List all repositories visible on the configured repository host. By default, one repository name is printed per line. List output is preceded by a status message which may be suppressed with `--quiet true`, which can be useful for composition with other commands. An alternative delimiter can be specified with `--delimiter`, e.g. `--delimiter ","`.
+
 ###AddFiles
 
 For a given repo, create a branch, add files in a specified directory, commit and create a pull request against the original branch.
