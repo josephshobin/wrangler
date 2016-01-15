@@ -14,6 +14,9 @@
 
 package wrangler
 package commands
+
+import scala.Console
+
 import scalaz._, Scalaz._
 
 import com.quantifind.sumac.ArgMain
@@ -25,7 +28,7 @@ import wrangler.api.{Automator => AAutomator, _}
 /** Arguments for `Automator`.*/
 class AutomatorArgs extends StashOrGithubArgs {
   @Required
-  var repos: List[String] = _
+  var repos: List[String] = _ // use '-' to read from stdin
   @Required
   var branch: String = _
   @Required
@@ -36,6 +39,7 @@ class AutomatorArgs extends StashOrGithubArgs {
   var script: String = _
 
   var targetBranch: String = "master"
+  var dryRun: Boolean      = false
 }
 
 /** 
@@ -52,7 +56,10 @@ object Automator extends ArgMain[AutomatorArgs] {
   /** Runs the command.*/
   def main(args: AutomatorArgs): Unit = {
     def createPullRequest(repo: String): Repo[Unit] =
-      if (args.useGithub) {
+      if (args.dryRun) {
+        println(s"Skipping $repo")
+        ().right
+      } else if (args.useGithub) {
         val gh = args.ogithub.get
 
         val (initial, pass) = Github.retryUnauthorized(
@@ -80,6 +87,10 @@ object Automator extends ArgMain[AutomatorArgs] {
     val gitUrl =
       if (args.useGithub) s"${args.ogithub.get.gitUrl}/${args.ogithub.get.org}"
       else s"${args.ostash.get.gitUrl}/${args.ostash.get.project}"
+
+    val repos = 
+      if (args.repos != List("-")) args.repos
+      else Iterator.continually(Console.readLine).takeWhile(_ != null)
 
     val result = AAutomator.runAutomator(
       gitUrl, args.repos, args.targetBranch, args.script,

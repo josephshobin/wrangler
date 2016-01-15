@@ -130,6 +130,10 @@ The command  to update Github repos then is `updater --useGithub true --updaterC
 Unfortunately running automator using the bash command has some issues when it comes to strings with
 spaces. Instead is has to be run directly, e.g. `java  -cp wrangler-assembly-0.9.0.jar:bin wrangler.commands.Automator --repos uniform,piped --branch travis_fix --title "Travis fix" --description "Travis fix" --useGithub true --script /path/travis_fix.sh`.
 
+By default `automator` accepts a list of repositories to act on as a comma-separated list supplied to the command line argument `--repos`. If the value `-` is used, `automator` will instead read a list of repositories from standard input, one per line, until the end of input is reached. This makes `automator` composable with other wrangler tools, such as `list-stash-repos`, in order to build automation pipelines.
+
+The `--dry-run true` argument will not create pull requests, allowing automation scripts to be safely tested.
+
 ###AddFiles
 
 For a given repo, create a branch, add files in a specified directory, commit and create a pull request against the original branch.

@@ -21,14 +21,17 @@ import wrangler.api.{Stash, Github}
 import wrangler.commands.args.StashOrGithubArgs
 
 /** Arguments for `ListRepos`.*/
-class ListReposArgs extends StashOrGithubArgs
+class ListReposArgs extends StashOrGithubArgs {
+  var delimiter: String  = "\n"   // Separator for displayed repositories
+  var quiet:     Boolean = false  // Suppress start-up message?
+}
 
 /** List all the repos belonging to the specified stash project or github org.*/
 object ListRepos extends ArgMain[ListReposArgs] {
   def main(args: ListReposArgs): Unit = {
     val result = 
       if (args.useStash) {
-        println("Listing Stash repos")
+        if(!args.quiet) println("Listing Stash repos")
         val stash = args.ostash.get
         val (result, _) = Stash.retryUnauthorized(
           stash.tpassword,
@@ -37,7 +40,7 @@ object ListRepos extends ArgMain[ListReposArgs] {
         
         result
       } else {
-        println("Listing Github repos")
+        if(!args.quiet) println("Listing Github repos")
         val github = args.ogithub.get
         val (result, _) = Github.retryUnauthorized(
           github.tpassword,
@@ -47,7 +50,7 @@ object ListRepos extends ArgMain[ListReposArgs] {
         result
       }
 
-    println(result.fold(_.msg, _.mkString("\n")))
+    println(result.fold(_.msg, _.mkString(args.delimiter)))
 
     //Exit manually since dispatch hangs.
     sys.exit(0)
