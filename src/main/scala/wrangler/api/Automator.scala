@@ -30,7 +30,7 @@ case class UpdaterParseError(in: String)
 case class UpdaterResolveError(latest: Latest, versions: List[Artifact])
     extends UpdaterError {
   val msg =
-    s"Couldn't find latest version for ${latest.group} % ${latest.name} in" ++
+    s"Couldn't find latest version for ${latest.group} % ${latest.name} in:\n" ++
     s"${versions.map(_.pretty).mkString("\n")}"
 }
 
@@ -126,7 +126,11 @@ object Automator {
   def resolveArtifact(artifact: UnresolvedArtifact, artifacts: List[Artifact]): Updater[GenericArtifact] = artifact match {
     case Specific(a)    => a.right
     case l@Latest(g, n) =>
-      artifacts.find(a => a.group == g && a.name == n)
+      artifacts.collect {
+        case a if a.group == g && a.name == n           => a
+        case a if a.group == g && a.name == n + "-core" => a.copy(name = n)  // match "foo-core" and rewrite artifact to "foo"
+      }
+        .headOption
         .map(_.toGeneric.right)
         .getOrElse(UpdaterResolveError(l, artifacts).left)
   }
