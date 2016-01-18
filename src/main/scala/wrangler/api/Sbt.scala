@@ -88,22 +88,38 @@ object SbtProject {
     * with the specified version. Otherwise the input is unchanged.
     */
   def updateVersion(l: String, artifact: GenericArtifact): String = {
-    // Ignore addSbtPlugin("au.com.cba.omnia" % "uniform-core" % uniformVersion) and change uniformVersion instead
-    if (l.trim.startsWith("addSbtPlugin") && l.contains("uniformVersion")) l
-    else if (l.trim.startsWith("val uniformVersion") && artifact.name == "uniform")
-      l.replaceAll(""""[^"]*"""", s""""${artifact.version}"""")
-    else {
+    def camelCase(name: String) = {
+      val words = name.split("[-_]")
+      words.head + words.tail.map(_.capitalize).mkString("")
+    }
+
+    def updateVal(l: String) = {
+      val camelName = camelCase(artifact.name)
+      if (l.trim.startsWith(s"val ${camelName}Version"))
+        l.replaceAll(""""[^"]*"""", s""""${artifact.version}"""")
+      else l
+    }
+
+    def updateExplicit(l: String) = {
       val findRegex = s""""${artifact.group}"( *%%? *)"${artifact.name}"( *% *)"[^"]+""""
       val replaceRegex = s""""${artifact.group}"$$1"${artifact.name}"$$2"${artifact.version}""""
-
-      val updated = l.replaceAll(findRegex, replaceRegex)
-
-      if (artifact.group == "au.com.cba.omnia") {
-        val findRegex2 = s"""depend.omnia\\("${artifact.name}"[^)]+\\)"""
-        val replaceRegex2 = s"""depend.omnia("${artifact.name}", "${artifact.version}")"""
-        updated.replaceAll(findRegex2, replaceRegex2)
-      } else
-        updated
+      l.replaceAll(findRegex, replaceRegex)
     }
+
+    def updateDepend(l: String) = {
+      if (artifact.group == "au.com.cba.omnia") {
+        val findRegex2 = s"""depend.omnia\\("${artifact.name}"( *, )"[^"]+""""
+        val replaceRegex2 = s"""depend.omnia("${artifact.name}"$$1"${artifact.version}""""
+        l.replaceAll(findRegex2, replaceRegex2)
+      } else l
+    }
+
+    val l2 = l |> updateVal |> updateExplicit |> updateDepend
+    if (l != l2) {
+      println("< " + l)
+      println("> " + l2)
+      println("--")
+    }
+    l2
   }
 }
