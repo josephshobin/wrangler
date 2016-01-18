@@ -126,12 +126,11 @@ object Automator {
   def resolveArtifact(artifact: UnresolvedArtifact, artifacts: List[Artifact]): Updater[GenericArtifact] = artifact match {
     case Specific(a)    => a.right
     case l@Latest(g, n) =>
-      artifacts.collect {
-        case a if a.group == g && a.name == n           => a
-        case a if a.group == g && a.name == n + "-core" => a.copy(name = n)  // match "foo-core" and rewrite artifact to "foo"
-      }
+      artifacts
+        .filter(a => a.group == g && a.name.split('-').head == n)  // match both "foo" and "foo-core" (etc)
+        .sortBy(_.name)                                            // sort "foo" before "foo-core" (if both were found)
         .headOption
-        .map(_.toGeneric.right)
+        .map(a => a.copy(name = n).toGeneric.right)                // rewrite "foo-core" to the actual search name "foo"
         .getOrElse(UpdaterResolveError(l, artifacts).left)
   }
 
