@@ -127,7 +127,8 @@ object Automator {
     case Specific(a)    => a.right
     case l@Latest(g, n) =>
       artifacts
-        .filter(a => a.group == g && a.name.split('-').head == n)  // match both "foo" and "foo-core" (etc)
+        .filter(a => a.group == g &&
+          (a.name == n || a.name.startsWith(n + "-")))             // match both "foo" and "foo-core" (etc)
         .sortBy(_.name)                                            // sort "foo" before "foo-core" (if both were found)
         .headOption
         .map(a => a.copy(name = n).toGeneric.right)                // rewrite "foo-core" to the actual search name "foo"
