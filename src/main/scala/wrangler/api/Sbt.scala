@@ -93,6 +93,8 @@ object SbtProject {
       words.head + words.tail.map(_.capitalize).mkString("")
     }
 
+    // replace version in: val myArtifactVersion = "xxx"
+    // (note that in this case only the artifact name is considered, not the group)
     def updateVal(l: String) = {
       val camelName = camelCase(artifact.name)
       if (l.trim.startsWith(s"val ${camelName}Version"))
@@ -100,12 +102,16 @@ object SbtProject {
       else l
     }
 
+    // replace version in: "my.group" % "my-artifact" % "xxx"
+    //                 or: "my.group" %% "my-artifact" % "xxx"
     def updateExplicit(l: String) = {
       val findRegex = s""""${artifact.group}"( *%%? *)"${artifact.name}"( *% *)"[^"]+""""
       val replaceRegex = s""""${artifact.group}"$$1"${artifact.name}"$$2"${artifact.version}""""
       l.replaceAll(findRegex, replaceRegex)
     }
 
+    // replace version in: depend.omnia("my-artifact", "xxx")
+    //                 or: depend.omnia("my-artifact", "xxx", "my-config")
     def updateDepend(l: String) = {
       if (artifact.group == "au.com.cba.omnia") {
         val findRegex2 = s"""depend.omnia\\("${artifact.name}"( *, )"[^"]+""""
@@ -115,7 +121,9 @@ object SbtProject {
     }
 
     val l2 = l |> updateVal |> updateExplicit |> updateDepend
+
     if (l != l2) {
+      // print a "diff"-like summary of the change, as feedback to the user
       println("< " + l)
       println("> " + l2)
       println("--")
