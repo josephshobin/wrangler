@@ -5,6 +5,8 @@ set -u
 
 repo="$HOME/.wrangler/repos/$1"
 
+mkdir -p `dirname $repo`
+
 if [[ -d $repo ]]; then
   cd $repo
   git fetch origin
