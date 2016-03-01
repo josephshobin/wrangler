@@ -25,4 +25,7 @@ notifications:
     on_start: false
 env:
   global:
-    secure: acmFu/OTy91q+AfP6bIZGVzTrtEMdO3onOwl0YiG/aG+Ugc6O54Gzx8MxLDKP6IvaeJ348+zL+39JHXvk2Nn5d1OiNG6MwPzM5hZmJJDCBkG9ezP8ThZaLp6bGUW1jU9nVAydqzEWZlKzhN28nSWNPdc+8eu7Cwo7gQyKLOf1m8=
+    secure: lHFlo9U1E4PU+P6BpgBtra0370gRBZY412AgwJlsyN1FZaaXbl19BHY1TWPj4dl0/ELj1LwpCuMKufUKb3DhKc480/ipYvK71FAom4uFe1m8pP3nIHI/4tJBh91aTVFhQ38pN3ne+T7HudDlAbQfNHqxp1rluse3CY/4oRXFrck=
+before_install:
+- openssl aes-256-cbc -K $encrypted_2911a079a7e8_key -iv $encrypted_2911a079a7e8_iv
+  -in .travis/deploy-key.enc -out .travis/deploy-key.pem -d
