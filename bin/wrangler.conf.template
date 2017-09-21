@@ -1,40 +1,33 @@
 wrangler {
-travisGitPassword =
-travisArtifactoryPassword =
+  travisGitPassword = 
+  travisArtifactoryPassword = 
 
-github {
-  user     =
-  org      =
-  teamid   =
-  apiUrl   =
-  gitUrl   =
-  password =
-}
+  github {
+    user     = 
+    org      = 
+    teamid   = 
+    apiUrl   = 
+    gitUrl   = 
+    password = 
+  }
 
-stash {
-  user    = 
-  project = 
-  apiUrl  = 
-  gitUrl  = 
-}
+  stash {
+    user      = 
+    project   = 
+    apiUrl    = 
+    gitUrl    = 
+    reviewers = 
+  }
 
-artifactory {
-  url      =
-  repos    =
-  user     =
-  password =
-}
+  artifactory {
+    url      = 
+    repos    = 
+    user     = 
+  }
 
-artifactoryInternal {
-  url      =
-  repos    =
-  user     =
-  password =
-}
-
-teamcity {
-  url     =
-  project = 
-  user    = 
-}
+  teamcity {
+    url      = 
+    project  = 
+    user     = 
+  }
 }

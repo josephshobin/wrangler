@@ -211,6 +211,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       //"tardis"                 -> "tardis_version",
       //"omnia-test"             -> "omniatest_version",
       "uniform-core_2.10_0.13" -> "uniform_version",
+      "util-template"          -> "template_version",
       "etl-util"               -> "util_version",
       "etl-plugin"             -> "plugin_version"
     )

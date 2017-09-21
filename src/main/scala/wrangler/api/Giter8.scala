@@ -30,7 +30,7 @@ object Giter8 {
 
     for {
       _ <- Util.run(cmd, cwd)
-      _ <- Util.run(List("chmod" , "-x", s"$name/sbt"), cwd) // Set execute permission on sbt script.
+      _ <- Util.run(List("chmod" , "+x", s"$name/sbt"), cwd) // Set execute permission on sbt script.
     } yield s"Created $name"
   }
 }
