@@ -11,6 +11,11 @@ import wrangler.data._
 
 /** Arguments for `Updater`.*/
 class UpdaterArgs extends WranglerArgs with StashOrGithubArgs with MultipleArtifactoriesArgs {
+  var branch: Option[String]       = None
+  var title: Option[String]        = None
+  var description: Option[String]  = None
+  var targetBranch: Option[String] = None
+
   @Required
   var updaterConfig: String = _
 }
@@ -31,6 +36,11 @@ class UpdaterArgs extends WranglerArgs with StashOrGithubArgs with MultipleArtif
 object Updater extends ArgMain[UpdaterArgs] {
   /** Runs the command.*/
   def main(args: UpdaterArgs): Unit = {
+    val branch       = args.branch.getOrElse("wrangler/version_update")
+    val targetBranch = args.targetBranch.getOrElse("master")
+    val title        = args.title.getOrElse("Automatic version update")
+    val description  = args.description.getOrElse("")
+
     def createPullRequest(repo: String): Repo[Unit] =
       if (args.useGithub) {
         val gh = args.ogithub.get
@@ -41,7 +51,7 @@ object Updater extends ArgMain[UpdaterArgs] {
         )
 
         Github.pullRequest(
-          repo, "wrangler/version_update", "master", "Automatic version update", ""
+          repo, branch, targetBranch, title, description
         )(gh.torg, gh.tapiUrl, gh.tuser, pass).map(_ => ())
 
       } else {
@@ -53,7 +63,7 @@ object Updater extends ArgMain[UpdaterArgs] {
         )
 
         Stash.pullRequest(
-          repo, "wrangler/version_update", "master", "Automatic version update", "", stash.treviewers
+          repo, branch, targetBranch, title, description, stash.treviewers
         )(stash.tproject, stash.tapiUrl, stash.tuser, pass).map(_ => ())
       }
 
@@ -70,7 +80,7 @@ object Updater extends ArgMain[UpdaterArgs] {
 
     val result =
       AAutomator.liftArtifactory(artifacts) >>= { as =>
-        AAutomator.runUpdater(args.updaterConfig, as, gitUrl, createPullRequest)
+        AAutomator.runUpdater(args.updaterConfig, as, gitUrl, createPullRequest, targetBranch, branch, title)
       }
 
     val formatted = result.fold(

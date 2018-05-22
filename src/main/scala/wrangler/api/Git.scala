@@ -110,13 +110,13 @@ object Git {
   }
 
   /** Creates a new branch with the specified parent and checks it out.*/
-  def createBranch(branch: String, parent: String = "master")(repo: JGit): Git[JGit] =
+  def createBranch(branch: String, parent: String)(repo: JGit): Git[JGit] =
     \/.fromTryCatch {
       repo
         .checkout
         .setCreateBranch(true)
         .setName(branch)
-        .setStartPoint(parent)
+        .setStartPoint("origin/" + parent)
         .call
 
       repo

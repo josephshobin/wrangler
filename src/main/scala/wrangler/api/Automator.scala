@@ -173,6 +173,33 @@ object Automator {
   }
 
   /**
+    * Creates branch in the specified git repo.
+    *
+    * It does that by:
+    *  1. Cloning the project to a tmp location.
+    *  1. Creating a new branch based on the specified existing branch.
+    */
+  def gitBranch(
+    gitUrl: String, project: String, targetBranch: String, branch: String,
+    title: String, description: String
+  ): Updater[String] = {
+    println(s"Creating Branch in the repo $project with branch name $branch")
+
+    val dst = File.createTempFile("updater-", s"-$project")
+    dst.delete
+
+    val result = Git.clone(s"$gitUrl/$project", dst) |> liftGit(project) >>=
+      (repo => Git.createBranch(branch, targetBranch)(repo) |> liftGit(project)) >>= { repo =>
+      Git.add(".")(repo)
+        .flatMap(Git.commit(s"$title\n\n$description"))
+        .flatMap(Git.push(branch)) |> liftGit(project)
+    }
+
+    dst.delete
+    result.map(_ => s"Created Branch in the repo $project")
+  }
+
+  /**
     * Applies the specified shell script to the specified repos and creates pull requests with the
     * changes using the specified `pullRequest` function.
     */
@@ -214,12 +241,12 @@ object Automator {
     * projects. It creates pull requests with the changes using the specified `pullRequest` function.
     */
   def runUpdater
-    (configPath: String, artifacts: List[Artifact], gitUrl: String, createPullRequest: String => Repo[Unit])
+    (configPath: String, artifacts: List[Artifact], gitUrl: String, createPullRequest: String => Repo[Unit], targetBranch: String, branch: String, title: String)
       : Updater[List[Updater[String]]] = {
     parseUpdaterConfig(configPath) >>= { config =>
       config.artifacts.map(resolveArtifact(_, artifacts)).sequenceU.map { resolvedArtifacts =>
         config.targets.map(repoName => updateProject(
-          gitUrl, repoName, "master", "wrangler/version_update", "Automatic version updater",
+          gitUrl, repoName, targetBranch, branch, title,
           s"""Updated:\n${resolvedArtifacts.map(_.pretty).mkString("\n")}""", createPullRequest,
           dst => updateVersionsSbt(repoName, dst, resolvedArtifacts).map(_ => ())
         ))

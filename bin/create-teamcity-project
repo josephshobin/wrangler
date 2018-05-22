@@ -1,0 +1,24 @@
+#!/bin/bash
+source `dirname $0`/config.sh
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage: $0 REPO TEMPLATE" >&2
+  exit 1
+fi
+
+REPO=$1
+TEMPLATE=$2
+
+if [ -z "${REPO}" ]; then
+  echo "Repo Name must be specified"
+  echo "Usage: $0 repo teamcityTemplate"
+  exit 1
+fi
+
+if [ -z "${TEMPLATE}" ]; then
+  echo "teamcityTemplate Name must be specified"
+  echo "Usage: $0 repo teamcityTemplate"
+  exit 1
+fi
+
+java -cp $LEVI_PATH:$CONF_PATH wrangler.commands.CreateTeamCityProject --repo $REPO --teamcityTemplate $TEMPLATE

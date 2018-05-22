@@ -25,7 +25,8 @@ A collection of scripts around automating the development process.
   wrangler will get the latest version number to use from artifactory.
 * `gh-merge` For the specified github repo merges the specified branch into master doing a fast
   forward merge and then deletes the branch.
-      
+* `create-teamcity-project` Creates teamcity project for the repo with the given template
+
 Modify bin/config.sh to set the path to the jar and wrangler.conf. Wrangler.conf has all the
 configuration. Alternatively that configuration can be passed on the command line.
 
@@ -38,12 +39,12 @@ combination of the two.
 Wrangler uses [summac](https://github.com/quantifind/Sumac) for command line parsing and
 [config](https://github.com/typesafehub/config) for parsing config files.
 
-###Artifactory
+### Artifactory
 
 Wrangler can query up to three different artifactory repos. They need to be specified in the
 configuration file as artifactor, artifactory2, and artifactory3.
 
-###Example
+### Example
 
 ```
 wrangler {
@@ -110,7 +111,7 @@ When executing git commands Wrangler will authenticate:
 Examples
 --------
 
-###Updater
+### Updater
 
 ##### Config
 
@@ -125,7 +126,7 @@ artifacts = [
 
 The command  to update Github repos then is `updater --useGithub true --updaterConfig updater.config`
 
-###Automator
+### Automator
 
 Unfortunately running automator using the bash command has some issues when it comes to strings with
 spaces. Instead is has to be run directly, e.g. `java  -cp wrangler-assembly-0.9.0.jar:bin wrangler.commands.Automator --repos uniform,piped --branch travis_fix --title "Travis fix" --description "Travis fix" --useGithub true --script /path/travis_fix.sh`.
@@ -134,11 +135,11 @@ By default `automator` accepts a list of repositories to act on as a comma-separ
 
 The `--dry-run true` argument will not create pull requests, allowing automation scripts to be safely tested.
 
-###list-stash-repos and list-github-repos
+### list-stash-repos and list-github-repos
 
 List all repositories visible on the configured repository host. By default, one repository name is printed per line. List output is preceded by a status message which may be suppressed with `--quiet true`, which can be useful for composition with other commands. An alternative delimiter can be specified with `--delimiter`, e.g. `--delimiter ","`.
 
-###AddFiles
+### AddFiles
 
 For a given repo, create a branch, add files in a specified directory, commit and create a pull request against the original branch.
 
@@ -175,3 +176,33 @@ java -cp wrangler-assembly-1.0.0.jar:. wrangler.commands.AddFiles \
   --destRepoDir src/main/models
 ```
 This will create a branch `my_shiny_new_model` on the repo `ops.dosomething` and add the directory `Users/goofy/dev/wrangler_test/lobster_model` and it's contents to the location `src/main/models` within the new branch. It will then create a pull request with reviewers `mickey` and `donald`. Note that `--sourceDir` must be a fully qualified path.
+
+### Create Branch
+
+For a given repo, create a branch from the mentioned target branch.
+
+##### wrangler.conf
+```
+wrangler {
+  stash {
+    user = goofy
+    project = omnia
+    apiUrl = "https://stash.dev.cba/rest"
+    gitUrl = "http://stash.dev.cba/scm"
+    password = "my_password"
+  }
+}
+```
+
+The command to create branch is:
+```
+java -cp wrangler-assembly-1.0.0.jar:. wrangler.commands.CreateBranch \
+  --repos ops.dosomething \
+  --branch my_shiny_new_model \
+  --title "A test Model" \
+  --description "Model for testing" \
+  --useStash true \
+  --targetBranch my_shiny_old_model \
+```
+
+This will create a branch `my_shiny_new_model` on the repo `ops.dosomething` from the targetBranch `my_shiny_old_model`. Default targetBranch is master.
