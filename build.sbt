@@ -1,4 +1,4 @@
-//   Copyright 2014 Commonwealth Bank of Australia
+//   Copyright 2014-2018 Commonwealth Bank of Australia
 //
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@ import AssemblyKeys._
 
 name := "wrangler"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
-crossScalaVersions := Seq("2.10.3")
+crossScalaVersions := Seq("2.10.3", "2.10.4")
 
 scalacOptions ++= Seq(
   "-deprecation",
@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
   "net.databinder.dispatch" %% "dispatch-json4s-native"            % "0.11.0",
   "com.jcraft"               % "jsch.agentproxy.jsch"              % "0.0.7",
   "com.jcraft"               % "jsch.agentproxy.connector-factory" % "0.0.7",
-  "org.scala-sbt"            % "io"                                % "0.13.2",
+  "org.scala-sbt"            % "io"                                % "0.13.15",
   "com.typesafe"             % "config"                            % "1.2.1",
   "com.quantifind"          %% "sumac"                             % "0.3.0",
   "com.quantifind"          %% "sumac-ext"                         % "0.3.0",
@@ -47,13 +47,12 @@ libraryDependencies ++= Seq(
   "ch.qos.logback"           % "logback-classic"                   % "1.1.1"
 )
 
-mergeStrategy in assembly <<= (mergeStrategy in assembly) { (old: (String => MergeStrategy)) => (path: String) => path match {
-    case "META-INF/NOTICE.txt" => MergeStrategy.rename
-    case "META-INF/LICENSE.txt" => MergeStrategy.rename
-    case "META-INF/MANIFEST.MF" => MergeStrategy.discard
-    case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".dsa") => MergeStrategy.discard
-    case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".rsa") => MergeStrategy.discard
-    case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".sf") => MergeStrategy.discard
-    case _ => MergeStrategy.first
-  }
+mergeStrategy in assembly := {
+  case "META-INF/NOTICE.txt" => MergeStrategy.rename
+  case "META-INF/LICENSE.txt" => MergeStrategy.rename
+  case "META-INF/MANIFEST.MF" => MergeStrategy.discard
+  case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".dsa") => MergeStrategy.discard
+  case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".rsa") => MergeStrategy.discard
+  case PathList("META-INF", xs) if xs.toLowerCase.endsWith(".sf") => MergeStrategy.discard
+  case _ => MergeStrategy.first
 }
