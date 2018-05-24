@@ -38,12 +38,12 @@ combination of the two.
 Wrangler uses [summac](https://github.com/quantifind/Sumac) for command line parsing and
 [config](https://github.com/typesafehub/config) for parsing config files.
 
-###Artifactory
+### Artifactory
 
 Wrangler can query up to three different artifactory repos. They need to be specified in the
 configuration file as artifactor, artifactory2, and artifactory3.
 
-###Example
+### Example
 
 ```
 wrangler {
@@ -110,7 +110,7 @@ When executing git commands Wrangler will authenticate:
 Examples
 --------
 
-###Updater
+### Updater
 
 ##### Config
 
@@ -125,7 +125,7 @@ artifacts = [
 
 The command  to update Github repos then is `updater --useGithub true --updaterConfig updater.config`
 
-###Automator
+### Automator
 
 Unfortunately running automator using the bash command has some issues when it comes to strings with
 spaces. Instead is has to be run directly, e.g. `java  -cp wrangler-assembly-0.9.0.jar:bin wrangler.commands.Automator --repos uniform,piped --branch travis_fix --title "Travis fix" --description "Travis fix" --useGithub true --script /path/travis_fix.sh`.
@@ -134,11 +134,11 @@ By default `automator` accepts a list of repositories to act on as a comma-separ
 
 The `--dry-run true` argument will not create pull requests, allowing automation scripts to be safely tested.
 
-###list-stash-repos and list-github-repos
+### list-stash-repos and list-github-repos
 
 List all repositories visible on the configured repository host. By default, one repository name is printed per line. List output is preceded by a status message which may be suppressed with `--quiet true`, which can be useful for composition with other commands. An alternative delimiter can be specified with `--delimiter`, e.g. `--delimiter ","`.
 
-###AddFiles
+### AddFiles
 
 For a given repo, create a branch, add files in a specified directory, commit and create a pull request against the original branch.
 
