@@ -1,11 +1,11 @@
 language: scala
 jdk:
-- oraclejdk7
+- oraclejdk8
 sudo: false
 cache:
   directories:
-  - $HOME/.ivy2
-  - $HOME/.m2
+  - "$HOME/.ivy2"
+  - "$HOME/.m2"
 install:
 - curl https://commbank.artifactoryonline.com/commbank/binaries/ci/ci-$CI_VERSION.tar.gz | tar xz
 - ci/sbt-ci-setup.sh
@@ -25,5 +25,6 @@ notifications:
     on_start: false
 env:
   global:
-  - CI_VERSION=3.3.1-20161112085142-c2c258a
-  - secure: acmFu/OTy91q+AfP6bIZGVzTrtEMdO3onOwl0YiG/aG+Ugc6O54Gzx8MxLDKP6IvaeJ348+zL+39JHXvk2Nn5d1OiNG6MwPzM5hZmJJDCBkG9ezP8ThZaLp6bGUW1jU9nVAydqzEWZlKzhN28nSWNPdc+8eu7Cwo7gQyKLOf1m8=
+  - CI_VERSION=3.6.0-20170704005122-ec7202f
+  - secure: WRp53VqVPzEpdwh8W1wDJdvmzLuVjGzckdk9x3M3Qe8LOHV78YaofKr/GaXBqKit4DiKb9UIxS8Ab52RHxRlEtw0B3SzI1lzZUROeL4iPn8P7e0fnRwiBY7Mnj+aYh1G7e9F1mkPNaW7F3EOXqpXRwU3650uo6Lri65WmQ9mDVk=
+  - secure: d56QSqOPcVyZgGbnb9OdTLYFYe72Ou2Vjenhb2QVQYp7u0WpfCxMFJsHoj3OGfFwg9tkrKaVB6CpGpQOkCs22h2KBU3o+RWhuTPfH+1pCW/oxOUXLV7PHR3c1xIgM6Wjh81g5+f1bK0ZzatEFEn+m6TMQFP/7yNC27VHaz0Ithk=
