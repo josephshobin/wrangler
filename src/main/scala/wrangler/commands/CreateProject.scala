@@ -212,6 +212,7 @@ object CreateProject extends ArgMain[CreateProjectArgs] {
       //"omnia-test"             -> "omniatest_version",
       "uniform-core_2.10_0.13" -> "uniform_version",
       "util-template"          -> "template_version",
+      "spark-etl"              -> "spark_etl_version",
       "etl-util"               -> "util_version",
       "etl-plugin"             -> "plugin_version"
     )
