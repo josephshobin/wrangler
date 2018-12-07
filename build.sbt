@@ -16,9 +16,9 @@ import AssemblyKeys._
 
 name := "wrangler"
 
-scalaVersion := "2.10.5"
+scalaVersion := "2.10.7"
 
-crossScalaVersions := Seq("2.10.3", "2.10.4")
+crossScalaVersions := Seq("2.10.3", "2.10.4", "2.10.5")
 
 scalacOptions ++= Seq(
   "-deprecation",
